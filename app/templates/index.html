@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pharmaceutical RAG Agent</title>
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --primary-hover: #1d4ed8;
+            --background: #f8fafc;
+            --surface: #ffffff;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --border: #e2e8f0;
+            --success: #10b981;
+            --error: #ef4444;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: var(--background);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        h1 {
+            font-size: 1.875rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 1rem;
+        }
+
+        .query-form {
+            background: var(--surface);
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        #query-input {
+            flex: 1;
+            padding: 0.875rem 1rem;
+            font-size: 1rem;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        #query-input:focus {
+            border-color: var(--primary-color);
+        }
+
+        #query-input::placeholder {
+            color: var(--text-secondary);
+        }
+
+        .submit-btn {
+            padding: 0.875rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .submit-btn:hover:not(:disabled) {
+            background-color: var(--primary-hover);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .loading-spinner {
+            width: 18px;
+            height: 18px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            display: none;
+        }
+
+        .submit-btn.loading .loading-spinner {
+            display: block;
+        }
+
+        .submit-btn.loading .btn-text {
+            display: none;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .response-container {
+            background: var(--surface);
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            display: none;
+        }
+
+        .response-container.visible {
+            display: block;
+        }
+
+        .response-header {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .response-meta {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .classification-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .classification-badge.text {
+            background-color: #dbeafe;
+            color: #1e40af;
+        }
+
+        .classification-badge.sql {
+            background-color: #dcfce7;
+            color: #166534;
+        }
+
+        .classification-badge.hybrid {
+            background-color: #fef3c7;
+            color: #92400e;
+        }
+
+        .response-body {
+            padding: 1.5rem;
+        }
+
+        .answer-text {
+            font-size: 1rem;
+            line-height: 1.75;
+            white-space: pre-wrap;
+        }
+
+        .sources-section {
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .sources-title {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .source-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .source-item {
+            padding: 0.75rem 1rem;
+            background-color: var(--background);
+            border-radius: 8px;
+            font-size: 0.875rem;
+        }
+
+        .source-type {
+            display: inline-block;
+            padding: 0.125rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            margin-right: 0.5rem;
+        }
+
+        .source-type.text {
+            background-color: #dbeafe;
+            color: #1e40af;
+        }
+
+        .source-type.table {
+            background-color: #dcfce7;
+            color: #166534;
+        }
+
+        .error-message {
+            padding: 1rem 1.5rem;
+            background-color: #fef2f2;
+            border-left: 4px solid var(--error);
+            color: #991b1b;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .examples-section {
+            margin-top: 2rem;
+        }
+
+        .examples-title {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 0.75rem;
+        }
+
+        .example-queries {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .example-query {
+            padding: 0.5rem 1rem;
+            background-color: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .example-query:hover {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .example-category {
+            margin-bottom: 1rem;
+        }
+
+        .category-label {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.5rem;
+        }
+
+        .sql-label {
+            background-color: #dcfce7;
+            color: #166534;
+        }
+
+        .text-label {
+            background-color: #dbeafe;
+            color: #1e40af;
+        }
+
+        .hybrid-label {
+            background-color: #fef3c7;
+            color: #92400e;
+        }
+
+        .sql-query {
+            border-color: #86efac;
+        }
+
+        .sql-query:hover {
+            border-color: #22c55e;
+            color: #166534;
+            background-color: #f0fdf4;
+        }
+
+        .text-query {
+            border-color: #93c5fd;
+        }
+
+        .text-query:hover {
+            border-color: #3b82f6;
+            color: #1e40af;
+            background-color: #eff6ff;
+        }
+
+        .hybrid-query {
+            border-color: #fcd34d;
+        }
+
+        .hybrid-query:hover {
+            border-color: #f59e0b;
+            color: #92400e;
+            background-color: #fffbeb;
+        }
+
+        /* Cost Panel Styles */
+        .cost-panel {
+            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+            border: 1px solid #86efac;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 1rem;
+        }
+
+        .cost-panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+
+        .cost-panel-title {
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #166534;
+        }
+
+        .cost-total {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #166534;
+        }
+
+        .cost-breakdown {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.75rem;
+        }
+
+        .cost-item {
+            background: white;
+            border-radius: 6px;
+            padding: 0.75rem;
+        }
+
+        .cost-item-label {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+        }
+
+        .cost-item-value {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-top: 0.25rem;
+        }
+
+        .cost-item-sub {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            margin-top: 0.125rem;
+        }
+
+        .savings-badge {
+            display: inline-block;
+            background: #166534;
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+
+        .metrics-row {
+            display: flex;
+            gap: 1rem;
+            margin-top: 0.75rem;
+            padding-top: 0.75rem;
+            border-top: 1px solid #bbf7d0;
+        }
+
+        .metric {
+            flex: 1;
+            text-align: center;
+        }
+
+        .metric-value {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .metric-label {
+            font-size: 0.65rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+        }
+
+        footer {
+            margin-top: 3rem;
+            text-align: center;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Pharmaceutical RAG Agent</h1>
+            <p class="subtitle">Ask questions about pharmaceutical data - drug information, dosages, interactions, and more</p>
+        </header>
+
+        <div class="query-form">
+            <form id="query-form">
+                <div class="input-group">
+                    <input 
+                        type="text" 
+                        id="query-input" 
+                        placeholder="Ask a pharmaceutical question..." 
+                        autocomplete="off"
+                        required
+                    >
+                    <button type="submit" class="submit-btn" id="submit-btn">
+                        <span class="btn-text">Ask</span>
+                        <div class="loading-spinner"></div>
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <div class="response-container" id="response-container">
+            <div class="response-header">
+                <span class="classification-badge" id="classification-badge"></span>
+                <div class="response-meta">
+                    <span class="meta-item" id="latency-display"></span>
+                </div>
+            </div>
+            <div class="response-body">
+                <div class="answer-text" id="answer-text"></div>
+                
+                <!-- Cost Panel -->
+                <div class="cost-panel" id="cost-panel" style="display: none;">
+                    <div class="cost-panel-header">
+                        <span class="cost-panel-title">Query Cost Analysis</span>
+                        <span class="cost-total" id="cost-total"></span>
+                    </div>
+                    <div class="cost-breakdown">
+                        <div class="cost-item">
+                            <div class="cost-item-label">Tier-1 (Classification)</div>
+                            <div class="cost-item-value" id="tier1-cost"></div>
+                            <div class="cost-item-sub" id="tier1-info"></div>
+                        </div>
+                        <div class="cost-item">
+                            <div class="cost-item-label">Tier-2 (Synthesis)</div>
+                            <div class="cost-item-value" id="tier2-cost"></div>
+                            <div class="cost-item-sub" id="tier2-info"></div>
+                        </div>
+                    </div>
+                    <div class="metrics-row">
+                        <div class="metric">
+                            <div class="metric-value" id="total-tokens"></div>
+                            <div class="metric-label">Total Tokens</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value" id="latency-metric"></div>
+                            <div class="metric-label">Latency</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value"><span class="savings-badge" id="savings-badge"></span></div>
+                            <div class="metric-label">vs Tier-2 Only</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="sources-section" id="sources-section" style="display: none;">
+                    <div class="sources-title">Sources</div>
+                    <div class="source-list" id="source-list"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="error-message" id="error-message" style="display: none;"></div>
+
+        <div class="examples-section">
+            <div class="examples-title">Try these example queries (organized by query type):</div>
+            
+            <!-- SQL Queries (Green) -->
+            <div class="example-category">
+                <span class="category-label sql-label">SQL</span>
+                <div class="example-queries">
+                    <button class="example-query sql-query" data-query="What is the recommended dosage for ZYRTEC?">ZYRTEC dosage</button>
+                    <button class="example-query sql-query" data-query="What is ZYRTEC used for?">ZYRTEC uses</button>
+                    <button class="example-query sql-query" data-query="What is the dosage of children's cough DM for a 6 year old?">Children's cough dosage</button>
+                </div>
+            </div>
+            
+            <!-- Text Queries (Blue) -->
+            <div class="example-category">
+                <span class="category-label text-label">TEXT</span>
+                <div class="example-queries">
+                    <button class="example-query text-query" data-query="How do antihistamines like cetirizine work to relieve allergies?">How antihistamines work</button>
+                    <button class="example-query text-query" data-query="How does minoxidil promote hair growth?">Minoxidil mechanism</button>
+                    <button class="example-query text-query" data-query="What precautions should be taken when using sunscreen?">Sunscreen precautions</button>
+                </div>
+            </div>
+            
+            <!-- Hybrid Queries (Orange) -->
+            <div class="example-category">
+                <span class="category-label hybrid-label">HYBRID</span>
+                <div class="example-queries">
+                    <button class="example-query hybrid-query" data-query="What is ZYRTEC used for and what is the recommended adult dosage?">ZYRTEC uses & dosage</button>
+                    <button class="example-query hybrid-query" data-query="How does children's cough DM work and what is the dose for children aged 6-12?">Cough DM mechanism & dose</button>
+                    <button class="example-query hybrid-query" data-query="How do nicotine lozenges help with smoking cessation and what is the dosing schedule?">Nicotine lozenges help & schedule</button>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>Powered by Hybrid RAG with Tier-1 classification and Tier-2 synthesis</p>
+        </footer>
+    </div>
+
+    <script>
+        const form = document.getElementById('query-form');
+        const input = document.getElementById('query-input');
+        const submitBtn = document.getElementById('submit-btn');
+        const responseContainer = document.getElementById('response-container');
+        const classificationBadge = document.getElementById('classification-badge');
+        const latencyDisplay = document.getElementById('latency-display');
+        const answerText = document.getElementById('answer-text');
+        const sourcesSection = document.getElementById('sources-section');
+        const sourceList = document.getElementById('source-list');
+        const errorMessage = document.getElementById('error-message');
+        const exampleQueries = document.querySelectorAll('.example-query');
+
+        // Handle example query clicks
+        exampleQueries.forEach(btn => {
+            btn.addEventListener('click', () => {
+                input.value = btn.dataset.query;
+                form.dispatchEvent(new Event('submit'));
+            });
+        });
+
+        // Handle form submission
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const query = input.value.trim();
+            if (!query) return;
+
+            // Show loading state
+            submitBtn.classList.add('loading');
+            submitBtn.disabled = true;
+            errorMessage.style.display = 'none';
+            responseContainer.classList.remove('visible');
+
+            try {
+                const response = await fetch('/query', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ query }),
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.detail || 'Failed to process query');
+                }
+
+                const data = await response.json();
+                displayResponse(data);
+
+            } catch (error) {
+                errorMessage.textContent = error.message;
+                errorMessage.style.display = 'block';
+            } finally {
+                submitBtn.classList.remove('loading');
+                submitBtn.disabled = false;
+            }
+        });
+
+        function formatCost(cost) {
+            if (cost < 0.0001) return '< $0.0001';
+            if (cost < 0.01) return '$' + cost.toFixed(4);
+            if (cost < 1) return '$' + cost.toFixed(3);
+            return '$' + cost.toFixed(2);
+        }
+
+        function displayResponse(data) {
+            // Set classification badge
+            const classification = data.classification.query_type;
+            classificationBadge.textContent = classification;
+            classificationBadge.className = `classification-badge ${classification}`;
+
+            // Set latency
+            const latency = Math.round(data.latency_ms);
+            latencyDisplay.textContent = `${latency}ms`;
+
+            // Set answer
+            answerText.textContent = data.answer;
+
+            // Display cost panel
+            const costPanel = document.getElementById('cost-panel');
+            if (data.cost) {
+                const cost = data.cost;
+                
+                // Total cost
+                document.getElementById('cost-total').textContent = formatCost(cost.total_cost_usd);
+                
+                // Tier-1 cost
+                document.getElementById('tier1-cost').textContent = formatCost(cost.tier1_cost_usd);
+                document.getElementById('tier1-info').textContent = `${cost.tier1_tokens} tokens • ${cost.tier1_model}`;
+                
+                // Tier-2 cost
+                document.getElementById('tier2-cost').textContent = formatCost(cost.tier2_cost_usd);
+                document.getElementById('tier2-info').textContent = `${cost.tier2_tokens} tokens • ${cost.tier2_model}`;
+                
+                // Metrics
+                document.getElementById('total-tokens').textContent = (cost.tier1_tokens + cost.tier2_tokens).toLocaleString();
+                document.getElementById('latency-metric').textContent = `${latency}ms`;
+                
+                // Savings
+                const savingsBadge = document.getElementById('savings-badge');
+                if (cost.savings_vs_tier2_only > 0) {
+                    savingsBadge.textContent = `${cost.savings_vs_tier2_only.toFixed(0)}% saved`;
+                    savingsBadge.style.background = '#166534';
+                } else {
+                    savingsBadge.textContent = 'N/A';
+                    savingsBadge.style.background = '#64748b';
+                }
+                
+                costPanel.style.display = 'block';
+            } else {
+                costPanel.style.display = 'none';
+            }
+
+            // Set sources
+            if (data.sources && data.sources.length > 0) {
+                sourceList.innerHTML = '';
+                data.sources.forEach(source => {
+                    const sourceItem = document.createElement('div');
+                    sourceItem.className = 'source-item';
+                    sourceItem.innerHTML = `
+                        <span class="source-type ${source.source_type}">${source.source_type}</span>
+                        <strong>${source.title || source.source_id}</strong>
+                        ${source.snippet ? `<p style="margin-top: 0.5rem; color: var(--text-secondary); font-size: 0.813rem;">${source.snippet}</p>` : ''}
+                    `;
+                    sourceList.appendChild(sourceItem);
+                });
+                sourcesSection.style.display = 'block';
+            } else {
+                sourcesSection.style.display = 'none';
+            }
+
+            // Show response container
+            responseContainer.classList.add('visible');
+        }
+    </script>
+</body>
+</html>
