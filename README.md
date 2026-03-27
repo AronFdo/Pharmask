@@ -76,6 +76,9 @@ source venv/bin/activate
 
 # Install dependencies
 pip install -r requirements.txt
+
+# Optional: run tests
+pip install -r requirements-dev.txt
 ```
 
 ### 2. Configure Environment
@@ -261,6 +264,8 @@ app/
 - **Cost-Efficiency Ratio (CER)**: Significantly lower than GPT-4-only baseline
 
 ## Testing
+
+Install dev dependencies first: `pip install -r requirements-dev.txt`
 
 ```bash
 # Run tests
