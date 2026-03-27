@@ -114,12 +114,56 @@ class VectorClient:
         """Get the number of documents in the collection."""
         return self.collection.count()
     
+    def get_all_documents(
+        self,
+        limit: int | None = None,
+        include: list[str] | None = None,
+    ) -> dict:
+        """
+        Retrieve documents and metadata from the collection.
+        
+        Args:
+            limit: Maximum number of records to return (defaults to all).
+            include: Which fields to include (defaults to ['documents', 'metadatas', 'ids']).
+            
+        Returns:
+            Dict with 'ids', 'documents', 'metadatas'
+        """
+        if include is None:
+            include = ["documents", "metadatas", "ids"]
+        
+        # Chroma's get supports limit/offset; here we return the first N records.
+        # For our current corpus size (few thousand chunks), a single call is sufficient.
+        results = self.collection.get(
+            limit=limit,
+            include=include,
+        )
+        
+        return {
+            "ids": results.get("ids", []),
+            "documents": results.get("documents", []),
+            "metadatas": results.get("metadatas", []),
+        }
+    
     def delete_all(self) -> None:
-        """Delete all documents from the collection."""
-        # Get all IDs and delete them
-        all_docs = self.collection.get()
-        if all_docs["ids"]:
-            self.collection.delete(ids=all_docs["ids"])
+        """
+        Delete all documents from the collection.
+
+        Note: Chroma's `collection.delete(ids=[...])` can fail for large
+        collections due to SQL parameter limits. Dropping/recreating the
+        collection is safer and achieves the same effect.
+        """
+        # Prefer a full collection reset to avoid "too many SQL variables".
+        try:
+            self._client.delete_collection(self.COLLECTION_NAME)
+        except Exception:
+            # If the collection does not exist yet, ignore.
+            pass
+
+        self._collection = self._client.create_collection(
+            name=self.COLLECTION_NAME,
+            metadata={"description": "Pharmaceutical text chunks from PMC-OA and DailyMed"},
+        )
     
     def reset(self) -> None:
         """Reset the collection (delete and recreate)."""

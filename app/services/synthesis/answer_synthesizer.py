@@ -1,9 +1,16 @@
-"""Tier-2 Answer Synthesizer using GPT-4o or Claude for final answer generation."""
+"""Tier-2 Answer Synthesizer for final answer generation.
+
+Supports:
+- OpenAI (GPT-4o and others)
+- Anthropic (Claude)
+- Dr7.ai medical models (e.g. med-palm-2) via /v1/medical/chat/completions
+"""
 
 import json
 import logging
 from typing import Optional, Tuple
 
+import httpx
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.language_models import BaseChatModel
 
@@ -41,7 +48,7 @@ SYNTHESIS_PROMPT = """You are a pharmaceutical expert assistant. Your task is to
 
 
 class AnswerSynthesizer:
-    """Tier-2 synthesizer for generating comprehensive answers using GPT-4o or Claude."""
+    """Tier-2 synthesizer for generating comprehensive answers using LLMs."""
     
     def __init__(self):
         """Initialize the answer synthesizer."""
@@ -55,7 +62,7 @@ class AnswerSynthesizer:
         
         provider = settings.tier2_provider
         model = settings.tier2_model
-        
+        logger.info(f"Tier-2 provider: {settings.tier2_provider}, model: {settings.tier2_model}")
         if provider == "openai":
             from langchain_openai import ChatOpenAI
             self._llm = ChatOpenAI(
@@ -69,6 +76,13 @@ class AnswerSynthesizer:
                 api_key=settings.anthropic_api_key,
                 model=model,
                 temperature=0.2,
+            )
+        elif provider == "dr7":
+            # Dr7 medical models are called via HTTP in synthesize();
+            # we don't use a LangChain client here.
+            raise ValueError(
+                "Dr7 provider does not use LangChain client; "
+                "synthesize() handles Dr7 calls directly."
             )
         else:
             raise ValueError(f"Unknown Tier-2 provider: {provider}")
@@ -105,28 +119,74 @@ class AnswerSynthesizer:
                     0
                 )
             
-            # Get LLM and create chain
-            llm = self._get_llm()
-            chain = self._prompt | llm
+            provider = settings.tier2_provider
             
-            # Generate answer
-            response = await chain.ainvoke({
-                "query": query,
-                "text_context": text_context or "No text context available.",
-                "sql_context": sql_context or "No structured data available.",
-            })
-            
-            answer = response.content
-            
-            # Estimate token usage
-            prompt_tokens = (
-                len(SYNTHESIS_PROMPT.split()) +
-                len(query.split()) +
-                len(text_context.split()) +
-                len(sql_context.split())
-            )
-            response_tokens = len(answer.split())
-            tokens_used = prompt_tokens + response_tokens
+            if provider == "dr7":
+                # Call Dr7.ai medical chat completions (e.g. med-palm-2) directly via HTTP.
+                prompt_text = SYNTHESIS_PROMPT.format(
+                    query=query,
+                    text_context=text_context or "No text context available.",
+                    sql_context=sql_context or "No structured data available.",
+                )
+                
+                messages = [
+                    {
+                        "role": "user",
+                        "content": prompt_text,
+                    }
+                ]
+                
+                headers = {
+                    "Authorization": f"Bearer {settings.dr7_api_key}",
+                    "Content-Type": "application/json",
+                }
+                payload = {
+                    "model": settings.tier2_model,
+                    "messages": messages,
+                    "max_tokens": 1000,
+                    "temperature": 0.2,
+                }
+                
+                async with httpx.AsyncClient(timeout=60.0) as client:
+                    resp = await client.post(
+                        "https://dr7.ai/api/v1/medical/chat/completions",
+                        json=payload,
+                        headers=headers,
+                    )
+                    resp.raise_for_status()
+                    data = resp.json()
+                
+                choice = data["choices"][0]["message"]
+                answer = choice["content"]
+                
+                usage = data.get("usage", {})
+                tokens_used = int(usage.get("total_tokens") or 0)
+                if not tokens_used:
+                    # Fallback rough estimate if usage is missing
+                    tokens_used = len(prompt_text.split()) + len(answer.split())
+            else:
+                # Get LLM and create chain via LangChain
+                llm = self._get_llm()
+                chain = self._prompt | llm
+                
+                # Generate answer
+                response = await chain.ainvoke({
+                    "query": query,
+                    "text_context": text_context or "No text context available.",
+                    "sql_context": sql_context or "No structured data available.",
+                })
+                
+                answer = response.content
+                
+                # Estimate token usage (LangChain path)
+                prompt_tokens = (
+                    len(SYNTHESIS_PROMPT.split()) +
+                    len(query.split()) +
+                    len(text_context.split()) +
+                    len(sql_context.split())
+                )
+                response_tokens = len(answer.split())
+                tokens_used = prompt_tokens + response_tokens
             
             # Extract and enhance sources from the answer
             sources = self._enhance_sources(answer, retrieval_result.sources)

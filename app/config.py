@@ -14,7 +14,7 @@ class Settings(BaseSettings):
     tier1_model: str = "llama-3.1-8b-instant"
     
     # Tier-2 Configuration (paid model for synthesis)
-    tier2_provider: Literal["openai", "anthropic"] = "openai"
+    tier2_provider: Literal["openai", "anthropic", "dr7"] = "openai"
     tier2_model: str = "gpt-4o"
     
     # API Keys
@@ -22,6 +22,7 @@ class Settings(BaseSettings):
     google_api_key: str = ""
     openai_api_key: str = ""
     anthropic_api_key: str = ""
+    dr7_api_key: str = ""
     
     # Database Configuration
     chroma_persist_dir: Path = Path("./data/chroma")
@@ -57,6 +58,8 @@ class Settings(BaseSettings):
             return self.openai_api_key
         elif self.tier2_provider == "anthropic":
             return self.anthropic_api_key
+        elif self.tier2_provider == "dr7":
+            return self.dr7_api_key
         return ""
 
 

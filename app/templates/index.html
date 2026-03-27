@@ -448,6 +448,178 @@
             font-size: 0.875rem;
             color: var(--text-secondary);
         }
+
+        /* Step Progress */
+        .progress-steps {
+            margin-top: 1rem;
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 0.75rem 1rem;
+            display: none;
+        }
+
+        .step-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 0.75rem;
+        }
+
+        .step-item {
+            border-radius: 10px;
+            padding: 0.5rem 0.6rem;
+            border: 1px solid #e5e7eb;
+            background: #f8fafc;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            min-height: 34px;
+        }
+
+        .step-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 9999px;
+            background: #cbd5e1;
+        }
+
+        .step-item.running {
+            border-color: var(--primary-color);
+            background: #eff6ff;
+            color: #1d4ed8;
+        }
+
+        .step-item.running .step-dot {
+            background: var(--primary-color);
+        }
+
+        .step-item.done {
+            border-color: #86efac;
+            background: #ecfdf5;
+            color: #166534;
+        }
+
+        .step-item.done .step-dot {
+            background: #10b981;
+        }
+
+        /* Clickable citations */
+        .citation-link {
+            color: #1d4ed8;
+            text-decoration: underline;
+            cursor: pointer;
+            background: rgba(37, 99, 235, 0.08);
+            border-radius: 6px;
+            padding: 0 2px;
+        }
+
+        /* Evidence debug toggle + metadata */
+        .debug-toggle-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1rem;
+        }
+
+        .debug-toggle {
+            padding: 0.5rem 0.85rem;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            background: var(--surface);
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--text-primary);
+            transition: border-color 0.2s;
+        }
+
+        .debug-toggle:hover {
+            border-color: var(--primary-color);
+        }
+
+        pre.source-fulltext {
+            background: #0b1020;
+            color: #e5e7eb;
+            padding: 0.75rem;
+            border-radius: 10px;
+            overflow: auto;
+            font-size: 0.78rem;
+            line-height: 1.45;
+            margin-top: 0.6rem;
+        }
+
+        /* Query history */
+        .history-section {
+            background: var(--surface);
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--border);
+            padding: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .history-title {
+            font-size: 0.875rem;
+            font-weight: 700;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.75rem;
+        }
+
+        .history-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+        }
+
+        .history-item {
+            border: 1px solid var(--border);
+            background: #fff;
+            border-radius: 10px;
+            padding: 0.75rem;
+        }
+
+        .history-top {
+            display: flex;
+            justify-content: space-between;
+            gap: 0.75rem;
+            align-items: flex-start;
+        }
+
+        .history-query {
+            font-weight: 650;
+            font-size: 0.95rem;
+            color: var(--text-primary);
+        }
+
+        .history-ts {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            white-space: nowrap;
+        }
+
+        .history-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.6rem;
+            flex-wrap: wrap;
+        }
+
+        .ghost-btn {
+            padding: 0.45rem 0.7rem;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            background: var(--surface);
+            cursor: pointer;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .ghost-btn:hover {
+            border-color: var(--primary-color);
+        }
     </style>
 </head>
 <body>
@@ -475,6 +647,14 @@
             </form>
         </div>
 
+        <div class="progress-steps" id="progress-steps">
+            <div class="step-row">
+                <div class="step-item" id="step-1"><span class="step-dot"></span>Classifying</div>
+                <div class="step-item" id="step-2"><span class="step-dot"></span>Retrieving</div>
+                <div class="step-item" id="step-3"><span class="step-dot"></span>Synthesizing</div>
+            </div>
+        </div>
+
         <div class="response-container" id="response-container">
             <div class="response-header">
                 <span class="classification-badge" id="classification-badge"></span>
@@ -485,6 +665,12 @@
             <div class="response-body">
                 <div class="answer-text" id="answer-text"></div>
                 
+                <div class="debug-toggle-row">
+                    <button class="debug-toggle" id="toggle-evidence">
+                        Show Evidence Details
+                    </button>
+                </div>
+
                 <!-- Cost Panel -->
                 <div class="cost-panel" id="cost-panel" style="display: none;">
                     <div class="cost-panel-header">
@@ -562,6 +748,11 @@
             </div>
         </div>
 
+        <div class="history-section" id="history-section">
+            <div class="history-title">Recent queries</div>
+            <div class="history-list" id="history-list"></div>
+        </div>
+
         <footer>
             <p>Powered by Hybrid RAG with Tier-1 classification and Tier-2 synthesis</p>
         </footer>
@@ -578,7 +769,169 @@
         const sourcesSection = document.getElementById('sources-section');
         const sourceList = document.getElementById('source-list');
         const errorMessage = document.getElementById('error-message');
+        const costPanelEl = document.getElementById('cost-panel');
         const exampleQueries = document.querySelectorAll('.example-query');
+        const progressSteps = document.getElementById('progress-steps');
+        const step1 = document.getElementById('step-1');
+        const step2 = document.getElementById('step-2');
+        const step3 = document.getElementById('step-3');
+        const toggleEvidenceBtn = document.getElementById('toggle-evidence');
+        const evidenceDefaultExpanded = false;
+
+        const historyList = document.getElementById('history-list');
+        const HISTORY_KEY = 'pharma_query_history_v1';
+        const HISTORY_MAX = 10;
+
+        function setStepState(stepEl, state) {
+            stepEl.classList.remove('running', 'done');
+            if (state === 'running') stepEl.classList.add('running');
+            if (state === 'done') stepEl.classList.add('done');
+        }
+
+        function startProgressSimulation() {
+            progressSteps.style.display = 'block';
+            setStepState(step1, 'running');
+            setStepState(step2, 'pending');
+            setStepState(step3, 'pending');
+
+            // We don't have server-side streaming, so this is a UX-friendly simulation.
+            window.__pharmaProgressTimers && window.__pharmaProgressTimers.forEach(t => clearTimeout(t));
+            window.__pharmaProgressTimers = [
+                window.setTimeout(() => { setStepState(step1, 'done'); setStepState(step2, 'running'); }, 450),
+                window.setTimeout(() => { setStepState(step2, 'done'); setStepState(step3, 'running'); }, 1100),
+            ];
+        }
+
+        function finishProgress() {
+            setStepState(step1, 'done');
+            setStepState(step2, 'done');
+            setStepState(step3, 'done');
+            window.setTimeout(() => { progressSteps.style.display = 'none'; }, 250);
+        }
+
+        function escapeHtml(s) {
+            return (s ?? '').toString()
+                .replaceAll('&', '&amp;')
+                .replaceAll('<', '&lt;')
+                .replaceAll('>', '&gt;')
+                .replaceAll('"', '&quot;')
+                .replaceAll("'", '&#039;');
+        }
+
+        function formatTs(ts) {
+            try {
+                const d = new Date(ts);
+                return d.toLocaleString();
+            } catch (e) {
+                return '';
+            }
+        }
+
+        function normalizeAnswerTextForCitations(text) {
+            return text || '';
+        }
+
+        function linkifyCitations(rawText, sourceIdToDomId) {
+            const citationRegex = /\[Source:\s*([^\]]+?)\]/g;
+            let html = '';
+            let lastIndex = 0;
+            let match;
+
+            while ((match = citationRegex.exec(rawText)) !== null) {
+                const mStart = match.index;
+                const mEnd = citationRegex.lastIndex;
+                const matchText = rawText.slice(mStart, mEnd);
+                const sourceId = (match[1] || '').trim();
+
+                html += escapeHtml(rawText.slice(lastIndex, mStart));
+
+                const domId = sourceIdToDomId[sourceId];
+                if (domId) {
+                    const safeMatchText = escapeHtml(matchText);
+                    html += `<a class="citation-link" href="#${domId}">${safeMatchText}</a>`;
+                } else {
+                    html += escapeHtml(matchText);
+                }
+
+                lastIndex = mEnd;
+            }
+
+            html += escapeHtml(rawText.slice(lastIndex));
+            return html;
+        }
+
+        function loadHistory() {
+            try {
+                const raw = localStorage.getItem(HISTORY_KEY);
+                if (!raw) return [];
+                const parsed = JSON.parse(raw);
+                if (!Array.isArray(parsed)) return [];
+                return parsed;
+            } catch (e) {
+                return [];
+            }
+        }
+
+        function saveHistory(items) {
+            try {
+                localStorage.setItem(HISTORY_KEY, JSON.stringify(items.slice(0, HISTORY_MAX)));
+            } catch (e) {
+                // ignore localStorage failures (private mode)
+            }
+        }
+
+        function renderHistory() {
+            const items = loadHistory();
+            historyList.innerHTML = '';
+
+            if (!items.length) {
+                const empty = document.createElement('div');
+                empty.style.color = '#64748b';
+                empty.style.fontSize = '0.9rem';
+                empty.textContent = 'No recent queries yet.';
+                historyList.appendChild(empty);
+                return;
+            }
+
+            items.forEach((item, idx) => {
+                const el = document.createElement('div');
+                el.className = 'history-item';
+
+                const tsText = formatTs(item.ts);
+                const classification = item.classification_type || '';
+                const badgeClass = classification ? `classification-badge ${classification}` : 'classification-badge hybrid';
+                const badgeText = classification || '-';
+
+                el.innerHTML = `
+                    <div class="history-top">
+                        <div style="flex: 1;">
+                            <div class="history-query">${escapeHtml(item.query || '')}</div>
+                            <div style="margin-top: 0.35rem;">
+                                <span class="${badgeClass}">${escapeHtml(badgeText)}</span>
+                            </div>
+                        </div>
+                        <div class="history-ts">${escapeHtml(tsText)}</div>
+                    </div>
+                    <div class="history-actions">
+                        <button class="ghost-btn" data-action="rerun" data-q="${idx}">Re-run</button>
+                    </div>
+                `;
+
+                historyList.appendChild(el);
+            });
+        }
+
+        toggleEvidenceBtn.addEventListener('click', () => {
+            const isExpanded = toggleEvidenceBtn.textContent.includes('Hide');
+            const newText = isExpanded ? 'Show Evidence Details' : 'Hide Evidence Details';
+            toggleEvidenceBtn.textContent = newText;
+
+            document.querySelectorAll('pre.source-fulltext').forEach(pre => {
+                pre.style.display = isExpanded ? 'none' : 'block';
+            });
+        });
+
+        renderHistory();
 
         // Handle example query clicks
         exampleQueries.forEach(btn => {
@@ -588,18 +941,20 @@
             });
         });
 
-        // Handle form submission
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            const query = input.value.trim();
+        async function runQuery(query, opts) {
+            const options = opts || {};
+            const saveToHistory = options.saveToHistory !== false;
+
             if (!query) return;
 
-            // Show loading state
+            startProgressSimulation();
+
             submitBtn.classList.add('loading');
             submitBtn.disabled = true;
             errorMessage.style.display = 'none';
             responseContainer.classList.remove('visible');
+            sourcesSection.style.display = 'none';
+            costPanelEl.style.display = 'none';
 
             try {
                 const response = await fetch('/query', {
@@ -616,15 +971,33 @@
                 }
 
                 const data = await response.json();
-                displayResponse(data);
-
+                displayResponse(data, { query, saveToHistory });
+                finishProgress();
             } catch (error) {
                 errorMessage.textContent = error.message;
                 errorMessage.style.display = 'block';
             } finally {
                 submitBtn.classList.remove('loading');
                 submitBtn.disabled = false;
+                progressSteps.style.display = 'none';
             }
+        }
+
+        // Handle form submission
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            await runQuery(input.value.trim(), { saveToHistory: true });
+        });
+
+        historyList.addEventListener('click', (e) => {
+            const btn = e.target.closest('button[data-action="rerun"]');
+            if (!btn) return;
+            const idx = parseInt(btn.getAttribute('data-q'), 10);
+            const items = loadHistory();
+            const item = items[idx];
+            if (!item) return;
+            input.value = item.query || '';
+            runQuery(item.query, { saveToHistory: false });
         });
 
         function formatCost(cost) {
@@ -634,7 +1007,10 @@
             return '$' + cost.toFixed(2);
         }
 
-        function displayResponse(data) {
+        function displayResponse(data, ctx) {
+            const query = ctx ? ctx.query : '';
+            const saveToHistory = ctx ? ctx.saveToHistory : true;
+
             // Set classification badge
             const classification = data.classification.query_type;
             classificationBadge.textContent = classification;
@@ -648,7 +1024,7 @@
             answerText.textContent = data.answer;
 
             // Display cost panel
-            const costPanel = document.getElementById('cost-panel');
+            const costPanel = costPanelEl;
             if (data.cost) {
                 const cost = data.cost;
                 
@@ -686,12 +1062,22 @@
             if (data.sources && data.sources.length > 0) {
                 sourceList.innerHTML = '';
                 data.sources.forEach(source => {
+                    const safeDomId = ('source-' + source.source_id).replaceAll(/[^a-zA-Z0-9\-_]/g, '_');
+
+                    const fullText = source?.metadata?.full_text || '';
+                    const fullTextPre = fullText
+                        ? `<pre class="source-fulltext" style="display:${evidenceDefaultExpanded ? 'block' : 'none'};">${escapeHtml(fullText)}</pre>`
+                        : '';
+
                     const sourceItem = document.createElement('div');
                     sourceItem.className = 'source-item';
+                    sourceItem.id = safeDomId;
+
                     sourceItem.innerHTML = `
                         <span class="source-type ${source.source_type}">${source.source_type}</span>
                         <strong>${source.title || source.source_id}</strong>
                         ${source.snippet ? `<p style="margin-top: 0.5rem; color: var(--text-secondary); font-size: 0.813rem;">${source.snippet}</p>` : ''}
+                        ${fullTextPre}
                     `;
                     sourceList.appendChild(sourceItem);
                 });
@@ -700,8 +1086,32 @@
                 sourcesSection.style.display = 'none';
             }
 
+            // Set answer (with clickable citations once sources are rendered)
+            const rawAnswer = normalizeAnswerTextForCitations(data.answer);
+            const mapping = {};
+            if (data.sources && data.sources.length) {
+                data.sources.forEach(source => {
+                    const safeDomId = ('source-' + source.source_id).replaceAll(/[^a-zA-Z0-9\-_]/g, '_');
+                    mapping[source.source_id] = safeDomId;
+                });
+            }
+            answerText.innerHTML = linkifyCitations(rawAnswer, mapping);
+
             // Show response container
             responseContainer.classList.add('visible');
+
+            // Save to history
+            if (saveToHistory && query) {
+                const items = loadHistory();
+                items.unshift({
+                    query: query,
+                    ts: Date.now(),
+                    classification_type: data.classification ? data.classification.query_type : '',
+                    answer: data.answer,
+                });
+                saveHistory(items);
+                renderHistory();
+            }
         }
     </script>
 </body>

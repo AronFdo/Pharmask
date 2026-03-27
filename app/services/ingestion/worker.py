@@ -137,10 +137,54 @@ class IngestionWorker:
         # Load text chunks to Vector DB
         chunks_created = await self._load_text_chunks(doc)
         
+        # Load the core drug record (so `drugs` table isn't left empty)
+        # Only do this when the DailyMed parser populated drug metadata.
+        await self._load_drug_record_if_available(doc)
+        
         # Load tables to SQL DB
         tables_extracted = await self._load_tables(doc)
         
         return chunks_created, tables_extracted
+
+    async def _load_drug_record_if_available(self, doc: ParsedDocument) -> None:
+        """
+        Insert a row into `drugs` when ingesting DailyMed SPL documents.
+
+        The current pipeline stores rows in `dosages/indications/...` using
+        `drug_id=doc.doc_id`, but it never created the corresponding `drugs`
+        records, leaving that table at 0.
+        """
+        if not doc.metadata:
+            return
+
+        # DailyMed parser sets these keys; PMC parser does not.
+        drug_name = doc.metadata.get("drug_name")
+        ndc = doc.metadata.get("ndc")
+
+        if drug_name is None and ndc is None:
+            return
+
+        try:
+            name = str(drug_name).strip() if drug_name else ""
+            if not name:
+                name = "unknown"
+
+            self.sql_client.insert_row(
+                "drugs",
+                {
+                    "id": doc.doc_id,
+                    "name": name,
+                    "generic_name": "",
+                    "brand_name": "",
+                    "manufacturer": "",
+                    "ndc_code": str(ndc).strip() if ndc else "",
+                    "description": "",
+                    "source_doc": doc.source_file,
+                },
+            )
+        except Exception:
+            # Likely duplicate primary key; ignore to keep ingestion idempotent.
+            return
     
     async def _load_text_chunks(self, doc: ParsedDocument) -> int:
         """Load text chunks from document into Vector DB."""
@@ -150,6 +194,7 @@ class IngestionWorker:
         
         # Add abstract if present
         if doc.abstract:
+            title = doc.title or ""
             chunks = list(self.chunker.chunk_text(
                 doc.abstract,
                 source_doc=doc.doc_id,
@@ -160,7 +205,7 @@ class IngestionWorker:
                 documents.append(chunk.text)
                 metadatas.append({
                     "source_doc": doc.doc_id,
-                    "title": doc.title,
+                    "title": title,
                     "section": "Abstract",
                     "chunk_index": chunk.chunk_index,
                     "source_file": doc.source_file,
@@ -168,23 +213,25 @@ class IngestionWorker:
                 ids.append(chunk_id)
         
         # Add sections
-        for section in doc.sections:
+        for section_instance_idx, section in enumerate(doc.sections):
+            section_title = section.get("title") or ""
             chunks = list(self.chunker.chunk_text(
                 section["text"],
                 source_doc=doc.doc_id,
-                section=section["title"]
+                section=section_title
             ))
             for chunk in chunks:
                 chunk_id = self._generate_chunk_id(
-                    doc.doc_id, 
-                    section["title"], 
-                    chunk.chunk_index
+                    doc.doc_id,
+                    section_title,
+                    chunk.chunk_index,
+                    section_instance_idx=section_instance_idx,
                 )
                 documents.append(chunk.text)
                 metadatas.append({
                     "source_doc": doc.doc_id,
-                    "title": doc.title,
-                    "section": section["title"],
+                    "title": doc.title or "",
+                    "section": section_title,
                     "chunk_index": chunk.chunk_index,
                     "source_file": doc.source_file,
                 })
@@ -220,10 +267,11 @@ class IngestionWorker:
         
         Uses header keywords to determine table type.
         """
-        headers = [h.lower() for h in table.get("headers", [])]
+        # Some parsed tables may contain `None` fields; normalize to strings.
+        headers = [str(h).lower() for h in table.get("headers", []) if h is not None]
         rows = table.get("rows", [])
-        caption = table.get("caption", "").lower()
-        section = table.get("section", "").lower()
+        caption = str(table.get("caption") or "").lower()
+        section = str(table.get("section") or "").lower()
         
         if not rows:
             return False
@@ -242,8 +290,68 @@ class IngestionWorker:
         elif any(kw in section for kw in ["dosage", "administration"]):
             return self._load_dosage_table(table, doc)
         else:
-            # Generic table - store as text in vector DB for now
+            # Conservative fallback for parsed scientific tables (e.g., PMC):
+            # if the table is clearly tabular with numeric cells, store a
+            # lightweight structured representation in `dosages`.
+            return self._load_generic_numeric_table(table, doc)
+
+    def _load_generic_numeric_table(self, table: dict, doc: ParsedDocument) -> bool:
+        """
+        Fallback loader for generic numeric tables.
+
+        This keeps ingestion conservative: only load when rows look tabular and
+        contain numeric values; otherwise skip to avoid noisy SQL rows.
+        """
+        headers = [str(h).strip() for h in table.get("headers", []) if h is not None]
+        rows = table.get("rows", [])
+        caption = str(table.get("caption") or "").strip()
+
+        if not rows:
             return False
+
+        # Require at least 2 columns and at least one numeric-like cell.
+        max_cols = max((len(r) for r in rows if isinstance(r, list)), default=0)
+        if max_cols < 2:
+            return False
+
+        def _is_numericish(v: str) -> bool:
+            s = str(v or "").strip()
+            if not s:
+                return False
+            # Accept values like "12", "12.3", "12 ± 3", "-5.4", "1,234"
+            for ch in s:
+                if ch.isdigit():
+                    return True
+            return False
+
+        has_numeric = any(_is_numericish(cell) for row in rows for cell in (row if isinstance(row, list) else []))
+        if not has_numeric:
+            return False
+
+        generic_rows = []
+        for row in rows:
+            if not isinstance(row, list) or len(row) < 2:
+                continue
+
+            first_col = str(row[0]).strip()
+            rest_cols = [str(c).strip() for c in row[1:] if str(c).strip()]
+            if not first_col and not rest_cols:
+                continue
+
+            # Map generic table content into existing `dosages` schema.
+            generic_rows.append({
+                "drug_id": doc.doc_id,
+                "form": first_col or (headers[0] if headers else ""),
+                "strength": " | ".join(rest_cols)[:1000],
+                "route": caption[:100] if caption else "",
+                "frequency": (" | ".join(headers[1:]))[:255] if len(headers) > 1 else "",
+                "source_doc": doc.source_file,
+            })
+
+        if generic_rows:
+            self.sql_client.insert_rows("dosages", generic_rows)
+            return True
+        return False
     
     def _load_dosage_table(self, table: dict, doc: ParsedDocument) -> bool:
         """Load a dosage table into the dosages SQL table."""
@@ -395,7 +503,17 @@ class IngestionWorker:
             return True
         return False
     
-    def _generate_chunk_id(self, doc_id: str, section: str, chunk_index: int) -> str:
+    def _generate_chunk_id(
+        self,
+        doc_id: str,
+        section: str,
+        chunk_index: int,
+        *,
+        section_instance_idx: int | None = None,
+    ) -> str:
         """Generate a unique ID for a text chunk."""
-        content = f"{doc_id}:{section}:{chunk_index}"
+        # Include `section_instance_idx` because some documents can contain
+        # repeated section titles; without it, chunk ids can collide inside
+        # the same document and Chroma rejects duplicate ids.
+        content = f"{doc_id}:{section}:{section_instance_idx}:{chunk_index}"
         return hashlib.md5(content.encode()).hexdigest()

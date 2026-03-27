@@ -27,6 +27,7 @@ async def setup_data(
     pmc_limit: int = None,
     skip_pmc: bool = False,
     dailymed_path: str = None,
+    pmc_dataset_source: str = "pmc_open_access",
     run_ingestion: bool = True,
 ):
     """
@@ -55,6 +56,7 @@ async def setup_data(
             subset="commercial",
             limit=pmc_limit,
             streaming=True,
+            dataset_source=pmc_dataset_source,
         )
         logger.info(f"PMC download complete: {count} documents")
     else:
@@ -139,6 +141,13 @@ def main():
         help="Path to existing DailyMed download folder",
     )
     parser.add_argument(
+        "--pmc-dataset-source",
+        type=str,
+        choices=["pmc_open_access", "tomtbt_xml"],
+        default="pmc_open_access",
+        help="PMC dataset source for download (default: pmc_open_access)",
+    )
+    parser.add_argument(
         "--skip-ingestion",
         action="store_true",
         help="Skip ingestion after downloading",
@@ -153,6 +162,7 @@ def main():
         pmc_limit=pmc_limit,
         skip_pmc=args.skip_pmc,
         dailymed_path=args.dailymed_path,
+        pmc_dataset_source=args.pmc_dataset_source,
         run_ingestion=not args.skip_ingestion,
     ))
 

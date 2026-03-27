@@ -202,9 +202,15 @@ class XMLParser:
         if elem is not None and elem.text:
             return elem.text
         
-        elem = element.find(f".//*[local-name()='{tag_name}']")
-        if elem is not None and elem.text:
-            return elem.text
+        # lxml's `Element.find()` doesn't reliably support XPath functions like
+        # `local-name()`. Use `xpath()` so this works across namespace variants.
+        try:
+            matches = element.xpath(f".//*[local-name()='{tag_name}']")
+            if matches:
+                first = matches[0]
+                return getattr(first, "text", None) or ""
+        except Exception:
+            pass
             
         elem = element.find(f".//{tag_name}")
         if elem is not None and elem.text:
@@ -238,12 +244,33 @@ class XMLParser:
     
     def _extract_text_ns(self, element: etree._Element, xpath: str, ns: dict) -> str:
         """Extract text from an xpath match with namespaces."""
-        result = element.find(xpath, ns)
-        if result is not None:
-            if isinstance(result, str):
-                return result
-            return result.text or ""
-        return ""
+        # lxml's `Element.find()` does not support attribute paths like `/@root`
+        # and can raise errors such as `KeyError('@')`. Use `xpath()` which
+        # supports attribute extraction and returns strings/elements.
+        try:
+            result = element.xpath(xpath, namespaces=ns)
+        except Exception:
+            # Fallback to `find()` for simple element-only paths.
+            result = element.find(xpath, ns)
+
+        if result is None:
+            return ""
+
+        # `xpath()` typically returns a list of nodes/strings for element paths,
+        # and may return other types depending on the xpath expression.
+        if isinstance(result, list):
+            if not result:
+                return ""
+            first = result[0]
+            if isinstance(first, str):
+                return first or ""
+            # lxml elements
+            return getattr(first, "text", None) or ""
+
+        if isinstance(result, str):
+            return result
+
+        return getattr(result, "text", None) or ""
     
     def _get_element_text(self, element: etree._Element) -> str:
         """Get all text content from an element, including children."""

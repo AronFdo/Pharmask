@@ -76,6 +76,7 @@ class VectorRetriever:
                         "section": metadata.get("section", ""),
                         "source_doc": metadata.get("source_doc", ""),
                         "chunk_index": metadata.get("chunk_index", 0),
+                        "full_text": document,
                     }
                 )
                 sources.append(source)

@@ -1,0 +1,3146 @@
+
+
+===== PAGE 1/81 =====
+INFORMATICS INSTITUTE OF TECHNOLOGY
+In Collaboration with
+UNIVERSITY OF WESTMINSTER
+A Cost-Quantified, Hybrid-Retrieval RAG Agent for
+Pharmaceutical Q&A
+A Project Proposal Requirement Specification by
+Aron Fernando
+Supervised by
+Mr. Janith Prabhanuka
+November 2025
+
+===== PAGE 2/81 =====
+Pharmaceutical RAG Agent ABSTRACT
+ABSTRACT
+Problem: Massive amounts of data, both structured and unstructured text, are produced by the
+pharmaceutical industry. The large number of documents and high operating costs of powerful
+Large Language Models (LLMs) make it difficult to extract precise and trackable insights from
+these data lakes. A major setback in pharmaceutical research and development is caused by the
+fact that current data retrieval systems are frequently expensive and lack the complex
+multimodal fusion capabilities needed to combine information spread across various data
+formats.
+Methodology: This project develops a cost-quantified, hybrid-retrieval Retrieval-Augmented
+Generation (RAG) agent. The methodology is based on a two-tier model cascade that optimizes
+cost by routing queries to either a local, open-source LLM for simple tasks or a paid API for
+complex synthesis. The core innovation is a hybrid ingestion pipeline that parses documents,
+storing unstructured text in a Vector Database and structured tables in a SQL Database. The
+local LLM acts as an intelligent query classifier, routing requests to the appropriate data source
+(text, table, or both) to assemble the context. The economic benefit is measured using a novel
+metric, the Cost-Efficiency Ratio (CER).
+Subject Descriptors: Information systems -> Information retrieval -> Retrieval models and
+ranking Computing methodologies -> Artificial intelligence -> Natural language processing -
+> Language models
+Keywords: Retrieval-Augmented Generation (RAG), Hybrid Retrieval, Model Cascade, Cost-
+Efficiency, Multimodal Data
+i
+w1953948/20220526
+
+===== PAGE 3/81 =====
+Pharmaceutical RAG Agent Table of Contents
+Table of Contents
+ABSTRACT ................................................................................................................................ i
+Table of Contents ....................................................................................................................... ii
+List of Tables ............................................................................................................................. v
+List of Figures ............................................................................................................................ v
+List of Abbreviations and Definitions ........................................................................................ v
+Chapter 01: Introduction ............................................................................................................ 1
+1.1 Chapter Overview ............................................................................................................ 1
+1.2 Problem Background ....................................................................................................... 1
+1.3 Problem Definition ........................................................................................................... 1
+1.3.1 Problem Statement .................................................................................................... 2
+1.4 Research Motivation ........................................................................................................ 2
+1.5 Existing Work .................................................................................................................. 2
+1.6 Research Gap ................................................................................................................... 4
+1.7 Contribution to Body of Knowledge ................................................................................ 4
+1.8 Research Challenges ........................................................................................................ 5
+1.9 Research Questions .......................................................................................................... 6
+1.10 Research Aim ................................................................................................................. 6
+1.11 Research Objectives ....................................................................................................... 6
+1.11 Chapter Summary .......................................................................................................... 8
+Chapter 02: Literature Review ................................................................................................... 9
+2.1 Chapter Overview ............................................................................................................ 9
+2.2 Problem Domain .............................................................................................................. 9
+2.2.1 Overview of Data Management in the Pharmaceutical Industry .............................. 9
+2.2.2 The Emergence of Retrieval-Augmented Generation (RAG) .................................. 9
+2.3 Existing Work ................................................................................................................ 11
+2.4 Dataset Selection ............................................................................................................ 24
+2.5 Benchmarking and Evaluation ....................................................................................... 26
+2.5.2 Comparative Analysis of Existing Models ............................................................. 26
+2.5.3 Benchmarking Strategy ........................................................................................... 27
+2.6 Chapter Summary .......................................................................................................... 28
+Chapter 03: Methodology ........................................................................................................ 28
+3.1 Chapter Overview .......................................................................................................... 28
+3.2 Research Methodology (Saunders' Research Onion in Table Form) ............................. 29
+3.3 Development Methodology ........................................................................................... 30
+ii
+w1953948/20220526
+
+===== PAGE 4/81 =====
+Pharmaceutical RAG Agent Table of Contents
+3.3.1 Requirement Elicitation Methodology .................................................................... 31
+3.3.2 Design Methodology ............................................................................................... 31
+3.3.3 Programming Paradigm .......................................................................................... 31
+3.3.4 Testing Methodology .............................................................................................. 31
+3.3.5 Solution Methodology ............................................................................................ 32
+3.4 Project Management Methodology ................................................................................ 33
+3.4.2 Schedule .................................................................................................................. 34
+3.4.3 Resource Requirements .......................................................................................... 34
+3.4.4 Risk and Mitigation (Expanded with Severity and Frequency) .............................. 36
+3.4 Chapter Summary .................................................................................................... 37
+Chapter 04: Software Requirement Specification (SRS) ......................................................... 38
+4.1 Chapter Overview .......................................................................................................... 38
+4.2 Rich Picture Diagram ..................................................................................................... 38
+4.3 Stakeholder Analysis ..................................................................................................... 38
+4.3.1 Stakeholder Onion Model ....................................................................................... 39
+4.3.2 Stakeholder List and Viewpoints ............................................................................ 39
+4.4 Elicitation Techniques ................................................................................................... 40
+4.5 Discussion of Findings ................................................................................................... 41
+4.5.1 Literature Review Findings ..................................................................................... 41
+4.5.2 Interviews Findings ................................................................................................. 41
+4.7 Context Diagram ............................................................................................................ 44
+4.8 Use Case Diagram .......................................................................................................... 44
+4.8.1 Actors ...................................................................................................................... 44
+4.8.2 Use Cases ................................................................................................................ 45
+4.9 Use Case Descriptions ................................................................................................... 45
+4.10 Functional & Non-functional Requirements ................................................................ 48
+4.10.1 Functional Requirements ...................................................................................... 48
+4.10.2 Non-functional Requirements ............................................................................... 50
+4.11 Chapter Summary ........................................................................................................ 51
+Chapter 5: Social, Legal, Ethical and Professional Issues (SLEP) .......................................... 52
+5.1 Chapter Overview .......................................................................................................... 52
+5.2 SLEP Issues and Mitigation ........................................................................................... 52
+5.3 Chapter Summary .......................................................................................................... 55
+Chapter 6: Design .................................................................................................................... 56
+6.1 Chapter Overview .......................................................................................................... 56
+iii
+w1953948/20220526
+
+===== PAGE 5/81 =====
+Pharmaceutical RAG Agent Table of Contents
+6.2 Design Goals .................................................................................................................. 56
+6.3 System Architecture Diagram ........................................................................................ 57
+6.4 Detailed Design .............................................................................................................. 58
+6.5 Algorithm Design ........................................................................................................... 59
+6.6 UI Design ....................................................................................................................... 60
+6.7 Chapter Summary .......................................................................................................... 61
+Chapter 7: Implementation ...................................................................................................... 62
+7.1 Chapter Overview .......................................................................................................... 62
+7.2 Technology Selection ..................................................................................................... 62
+7.2.1 Technology Stack .................................................................................................... 62
+7.2.2 Programming Languages ................................................................................. 63
+7.2.3 Development Framework ........................................................................................ 64
+7.2.4 Libraries / Toolkits .................................................................................................. 64
+7.2.5 Integrated Development Environments (IDEs) .......................................................... 65
+7.2.6 Summary of Technology Selection ......................................................................... 65
+7.3 Core Functionalities Implementation ............................................................................. 66
+7.3.1 Dataset Description and Splits (AI/ML) ................................................................. 66
+7.3.2 Modular Development ............................................................................................ 66
+7.3.3 Code Structure ........................................................................................................ 67
+7.3.4 Module Integration .................................................................................................. 67
+7.4 User Interface Implementation ...................................................................................... 68
+7.4.1 Frontend Components ............................................................................................. 68
+7.4.2 Backend Integration ................................................................................................ 68
+7.4.3 Accessibility Considerations ................................................................................... 69
+7.5.1 Debugging ............................................................................................................... 69
+7.5.2 Performance Issues ................................................................................................. 69
+7.5.3 Resource Constraints .............................................................................................. 69
+7.5.4 Additional Implementation Notes ........................................................................... 70
+7.6 Chapter Summary .......................................................................................................... 70
+Chapter 8 : Time Schedule (Updated with Actual Progress) ................................................... 71
+References ................................................................................................................................ 72
+iv
+w1953948/20220526
+
+===== PAGE 6/81 =====
+Pharmaceutical RAG Agent List of Tables
+List of Tables
+Table 1: Existing Work .............................................................................................................. 4
+Table 2: Research Objectives ..................................................................................................... 7
+Table 3: Chapter 2 Existing Work ........................................................................................... 24
+Table 4: Comparative Analysis of Existing Models ................................................................ 27
+Table 5: Research Methodology .............................................................................................. 30
+Table 6: Deliverables ............................................................................................................... 34
+Table 7: Risk Mitigation .......................................................................................................... 37
+Table 8: Interview Findings ..................................................................................................... 43
+Table 9: Functional Requirements ........................................................................................... 50
+Table 10: Non-functional Requirements .................................................................................. 51
+List of Figures
+Figure 1:Saunder's Research Onion ......................................................................................... 29
+Figure 2: Rich Picture Diagram ............................................................................................... 38
+Figure 3: Context Diagram ...................................................................................................... 44
+Figure 4: Use Case Diagram .................................................................................................... 45
+List of Abbreviations and Definitions
+• AI (Artificial Intelligence): The field of computer science that is dedicated to creating
+systems that can perform tasks that generally require human intelligence.
+• API (Application Programming Interface): A set of rules and protocols that allows
+different software applications to communicate with each other. In this project it refers
+to the paid service used for the Tier-2 LLM.
+• CER (Cost-Efficiency Ratio): A novel metric proposed in this project to measure the
+operational cost of the RAG system, allowing for a benchmark against the baseline.
+• ETL (Extract, Transform, Load): A data pipeline process. In this project it refers to
+Extracting text and tables from PDFs, Transforming them into clean formats, and
+Loading them into the Vector and SQL databases.
+• F1-Score: A standard metric in machine learning used to measure a model's accuracy.
+It balances Precision and Recall and in this project it is used to evaluate both the Tier-
+1 Classifier and the accuracy of the final answer.
+• FDA (Food and Drug Administration): The U.S. government agency responsible for
+regulating public health, including pharmaceutical drugs. Its DailyMed database is a
+key data source.
+v
+w1953948/20220526
+
+===== PAGE 7/81 =====
+Pharmaceutical RAG Agent List of Abbreviations and Definitions
+• LLM (Large Language Model): A type of AI model (e.g., GPT-4) trained on vast
+amounts of text data, capable of understanding and generating natural language.
+• MoSCoW: A prioritization technique used in project management and software
+development, It stands for Must Have, Should Have, Could Have, Won't Have.
+• NLP (Natural Language Processing): A subfield of AI focused on the interaction
+between computers and human language which includes tasks like Text-to-SQL and
+semantic search.
+• PMC-OA (PubMed Central Open Access Subset): A free digital archive of full-text
+biomedical and life sciences journal articles which is used as the primary data source
+for this project.
+• Q&A (Question & Answering): The task in this project, of a user asking a natural
+language question and the RAG agent providing a fact-based, synthesized answer.
+• RAG (Retrieval-Augmented Generation): The core AI architecture of the project. It
+involves Retrieving relevant information from a knowledge base (the databases) before
+Generating an answer, in order to improve factual accuracy.
+• SQL (Structured Query Language): The standard programming language used to
+manage and query data in a relational (structured) database.
+• SRS (Software Requirement Specification): A formal document (Chapter 4) that
+describes the functional and non-functional requirements of a software system.
+• UML (Unified Modeling Language): A standardized modeling language used to
+visualize the design of a software system, such as in Use Case Diagrams or Context
+Diagrams.
+• Vector Database: A specialized database designed to store and query high-
+dimensional vector embeddings, enabling fast and efficient "semantic" or "conceptual"
+search.
+• XML (Extensible Markup Language): A markup language used to store and transport
+data in a structured format, common in the PMC-OA and DailyMed datasets.
+vi
+w1953948/20220526
+
+===== PAGE 8/81 =====
+Pharmaceutical RAG Agent Chapter 01: Introduction
+Chapter 01: Introduction
+1.1 Chapter Overview
+This chapter lays the basement for our project, which aims to build a cost-quantified, hybrid-
+retrieval RAG agent for the pharmaceutical industry. We start by providing background on
+the core problem: the complexity of handling and integrating large amounts of complex text
+and tabular data in drug research. From there, we present a formal problem statement. The
+chapter then explains why this research is important, summarizes related work, and points out
+the specific gap in current technology that our project addresses. We conclude by outlining the
+project's contributions, key research questions, and the overall goals that will guide our work.
+1.2 Problem Background
+The pharmaceutical industry creates massive amounts of data in a number of formats (Wang
+and Krishnan, 2021). With healthcare data growing rapidly, there's a huge opportunity to speed
+up drug discovery and cut the high costs of research & development (Deloitte, 2022; Wouters,
+McKee and Luyten, 2020). However, this potential is often lost because the data is
+disconnected and hard to access.
+Traditional keyword search fails when it comes to complex scientific documents (Hersh, 2017).
+Newer AI technologies like Retrieval-Augmented Generation (RAG) are better because they
+can understand natural language and provide fact-based answers (Lewis et al., 2020).
+However, using this AI in the pharmaceutical world faces two key problems. First, it's very
+costly for large-scale use (Yue et al., 2023). Secondly, these systems struggle to connect
+information when it's split between text and tables in the same document, which is a challenge
+they weren't designed for (Cheng et al., 2022). This creates a need for a solution that is
+intelligent, affordable, and can handle mixed data formats.
+1.3 Problem Definition
+The core issue is the absence of a practical and affordable solution for pharmaceutical
+researchers to pull precise, fact-based information from their vast and mixed data sources.
+Today's RAG tools fail to solve the three unique challenges in this field:
+1
+w1953948/20220526
+
+===== PAGE 9/81 =====
+Pharmaceutical RAG Agent Chapter 01: Introduction
+1. High Operational Costs: The dependence on 100% API-based LLMs makes them
+financially unfeasible at scale.
+2. Factual Inaccuracy: Current systems treat all data as unstructured text. They "chunk"
+and vectorize structured tables, destroying their tabular integrity. This leads to a
+retrieval of jumbled or incomplete context which causes the LLM to generate factually
+incorrect or incomplete answers when faced with a multimodal query.
+3. Lack of Efficiency Metrics: There is no standard framework to measure the cost-
+benefit of these systems which makes it hard to justify their deployment.
+This failure means pharmaceutical companies cannot leverage their data effectively and it leads
+to slower research and missed opportunities. Our project aims to solve this by developing a
+hybrid-retrieval system that processes text and tables using an optimal storage and retrieval
+strategy for each (a Vector DB for text, a SQL DB for tables) which ensures both cost-
+efficiency and factual accuracy.
+1.3.1 Problem Statement
+The pharmaceutical industry lacks a scalable and cost-effective data retrieval solution which is
+of accurately synthesizing insights from heterogeneous text and tabular data while providing
+trackable, evidence-backed answers.
+1.4 Research Motivation
+This research aims to showcase the value hidden in pharmaceutical data by handling the main
+barriers: cost and complexity. Our project will build a scalable and cost-effective AI agent that
+allows researchers to ask complex questions and receive quick, synthesized, evidence-based
+answers. If this knowledge discovery is sped up it has the potential to dramatically reduce drug
+development timelines, reduce R&D expenses, and subsequently accelerate the delivery of new
+medicines to patients.
+1.5 Existing Work
+Citation Summary Contribution Limitation
+(Chen et al., Developed a Demonstrated the Text-Only Architecture:
+2022) generic RAG effectiveness of RAG Lacks any mechanism for
+2
+w1953948/20220526
+
+===== PAGE 10/81 =====
+Pharmaceutical RAG Agent Chapter 01: Introduction
+system for for improving answer ingesting or retrieving data
+enterprise Q&A accuracy over standard from structured tables,
+using a single, high- LLMs in a corporate causing it to fail on
+performance LLM. setting. multimodal queries. Does not
+address cost.
+(Gupta and Created a Advanced the field of Lacks Hybrid-Retrieval:
+Li, 2023) multimodal model table understanding and Relies on a single, complex
+capable of parsing demonstrated model for fusion rather than a
+and querying techniques for fusing robust, hybrid system (SQL +
+financial reports numerical data with Vector DB). Lacks Cost-
+containing both text surrounding text. Quantification: Not
+and tables. optimized for cost or built
+with a model cascade.
+(Rodriguez Proposed an LLM Proved the principle of Unimodal Focus: The
+et al., 2023) routing system LLM cascades as an cascade logic is for simple
+(cascade) to direct effective strategy for text queries, not for complex
+simple user queries reducing operational hybrid-retrieval (text/table)
+to smaller, cheaper costs in AI systems. orchestration. Does not solve
+models, saving the multimodal data problem.
+costs.
+(Lee et al., Introduced Established the Not a RAG System: It is an
+2020) BioBERT, a significant performance encoder model, not a full,
+language model benefits of domain- generative RAG agent. It is a
+pre-trained on a specific pre-training for potential component (for
+large-scale language models in the embedding text) but not a
+biomedical text biomedical and solution in itself.
+corpus (e.g., pharmaceutical fields.
+PubMed abstracts).
+(Asai et al., Proposed Self- Introduced an advanced Ignores Retrieval Source:
+2023) RAG, a framework RAG technique that Focuses on answer quality,
+where an LLM improves factual not the underlying retrieval
+3
+w1953948/20220526
+
+===== PAGE 11/81 =====
+Pharmaceutical RAG Agent Chapter 01: Introduction
+learns to reflect on accuracy by making the problem from hybrid sources.
+its own generated retrieval and generation Ignores Cost: Adds
+text to improve process more adaptive. computational overhead and
+factual accuracy. does not address cost-
+efficiency.
+Table 1: Existing Work
+1.6 Research Gap
+As summarized in the previous section the existing research reveals a clear and critical research
+gap. The literature is fragmented into three separate areas, with no single project unifying them:
+1. Text-Only RAG: Systems like standard RAG (Chen et al., 2022) or Self-RAG (Asai
+et al., 2023) focus exclusively on unstructured text. They have no mechanism for
+accurately querying structured data which causes them to fail on multimodal questions.
+2. Cost-Only Optimization: Systems like LLM cascades (Rodriguez et al., 2023) are a
+powerful cost-saving strategy but they have only been applied and evaluated on simple
+text-only tasks. They do not address the challenge of retrieving multimodal data.
+3. Multimodal Fusion (non-RAG): Work on table-text fusion (Gupta and Li, 2023) often
+involves complex and singular models that are not designed as scalable retrieval
+systems and are mostly not optimized for cost.
+Therefore, the specific unaddressed research gap is the lack of a unified system that
+integrates a cost-saving model cascade with a hybrid-retrieval for complex, multimodal
+document analysis.
+1.7 Contribution to Body of Knowledge
+This project will make a dual contribution to both the problem domain (pharmaceutical
+research) and the research domain (applied AI systems).
+• Problem Domain Contribution (AI in Pharmaceutical Research): This project will
+deliver a strong and replicable architectural blueprint for a hybrid-retrieval RAG agent.
+This provides a practical path for pharmaceutical organizations to build cost-effective
+and accurate tools that can query both their unstructured text archives and their highly
+4
+w1953948/20220526
+
+===== PAGE 12/81 =====
+Pharmaceutical RAG Agent Chapter 01: Introduction
+structured tabular data via a single interface. This directly enhances research by
+unlocking disconnected data.
+• Research Domain Contribution (Applied AI & LLM Systems): This work will
+objectively assess and report on the following key areas:
+1. The introduction and empirical validation of the Cost-Efficiency Ratio (CER)
+as a primary metric for benchmarking the financial performance of RAG
+systems.
+2. The design of a hybrid-retrieval orchestration layer showcases how a model
+cascade can be used not only for cost-saving but also for intelligently routing
+queries to different optimized data stores.
+3. A publishable benchmark comparing a "vector-only" RAG system against this
+novel "hybrid-retrieval" system, quantitatively proving the model's accuracy on
+text+tables questions.
+1.8 Research Challenges
+The successful execution of this project involves overcoming several key technical challenges.
+Accurate Query Classification: The entire system depends on the Tier-1 (local) LLM's ability
+to accurately classify the user's intent as "text-only," "table-only," or "hybrid." An error here
+will lead to incomplete context and an incorrect answer.
+• Robust Table Ingestion (ETL): PDF table extraction is extremely difficult. A
+significant challenge will be building a durable data pipeline that can parse structurally
+diverse tables from research papers and load them into a clean, query-able SQL
+database schema.
+• Hybrid Context Synthesis: The Tier-2 (paid) LLM must be effectively prompted to
+synthesize a single answer from two distinct and differently formatted sources: a
+"semantic" text chunk from the Vector DB and a "factual" row of data from the SQL
+DB.
+5
+w1953948/20220526
+
+===== PAGE 13/81 =====
+Pharmaceutical RAG Agent Chapter 01: Introduction
+• Balancing Cost vs. Accuracy: A core challenge remains the central trade-off of the
+project: ensuring the cost-saving measures (using the cheaper local LLM) do not
+excessively degrade the final answer quality.
+1.9 Research Questions
+This research aims to answer the following questions:
+1. How can a two-tier model cascade be successfully used to not only reduce API costs
+but also to act as an intelligent query classifier for a hybrid-retrieval RAG system?
+2. How does a hybrid-retrieval architecture compare to a standard "vector-only" RAG
+baseline in terms of answer accuracy (F1-score) and reliability on multimodal
+(text/table) queries?
+3. What is the Cost-Efficiency Ratio (CER) of this hybrid system and how can this metric
+be used to provide an accurate and quantitative analysis of the economic trade-offs
+between API cost their compute cost and answer quality?
+1.10 Research Aim
+The aim of this research is to design, develop, and evaluate a scalable and cost-quantified,
+hybrid-retrieval RAG agent that provides an efficient and accurate data lake solution for
+pharmaceutical research.
+1.11 Research Objectives
+To achieve the research aim, the following objectives have been defined:
+Category Objective Research Objective Description LOs RQ
+ID Mapped Mapped
+Literature R01 To pilot an in-depth literature L01, L04 RQ1,
+Review survey on RAG architectures, RQ2
+hybrid-retrieval techniques, and
+LLM cost-optimization strategies.
+6
+w1953948/20220526
+
+===== PAGE 14/81 =====
+Pharmaceutical RAG Agent Chapter 01: Introduction
+Requirement R02 To identify the key functional and L03 RQ1,
+Elicitation non-functional requirements for a RQ2
+hybrid (text/table) information
+retrieval system in the
+pharmaceutical domain.
+System Design R03 To design a hybrid-retrieval L01 RQ1,
+architecture that (a) ingests and RQ2
+stores text in a Vector Database
+and tables in a SQL Database, and
+(b) uses a two-tier model cascade
+as the query-classifying
+orchestrator.
+Implementation R04 To implement a proof-of-concept L01, L02 RQ1,
+prototype that integrates the SQL RQ2
+DB and Vector DB with the model
+cascade, enabling it to retrieve and
+synthesize hybrid (text/table)
+context.
+Testing & R05 To quantitatively evaluate the L02, L04 RQ2,
+Evaluation prototype's performance based on RQ3
+answer quality (F1-score) and cost
+(CER) against a "vector-only"
+RAG baseline.
+Documentation R06 To document the project's L04 RQ1,
+methodology, findings, and RQ2,
+contributions in a final thesis. RQ3
+Table 2: Research Objectives
+7
+w1953948/20220526
+
+===== PAGE 15/81 =====
+Pharmaceutical RAG Agent Chapter 01: Introduction
+1.11 Chapter Summary
+This chapter identified a critical problem in pharmaceutical research: data is both expensive to
+query and difficult to retrieve accurately due to its multimodal nature. Current RAG systems
+fail by being too expensive or by breaking tabular data.
+To solve this we propose a hybrid-retrieval RAG agent using a Vector Database for text and a
+SQL Database for tables. This system is orchestrated by a two-tier model cascade for cost-
+efficiency and will be evaluated using a novel Cost-Efficiency Ratio (CER). The chapter has
+defined a clear aim, research questions, and objectives, setting the stage for the literature
+review.
+8
+w1953948/20220526
+
+===== PAGE 16/81 =====
+Pharmaceutical RAG Agent Chapter 02: Literature Review
+Chapter 02: Literature Review
+2.1 Chapter Overview
+This chapter provides a comprehensive review of the existing literature relevant to the
+development of a cost-quantified, hybrid-retrieval RAG agent. It begins by defining the
+problem domain then into detailing the specific challenges of querying mixed text and tabular
+data in pharmaceutical research. The chapter then critically evaluates existing work in RAG
+systems, hybrid-retrieval architectures and LLM cost-optimization. Following this, it discusses
+dataset selection and the benchmarking metrics necessary to evaluate and validate the system.
+The chapter concludes with a summary of the key findings and the specific research gap that
+this project addresses.
+2.2 Problem Domain
+The landscape of pharmaceutical research is a data-driven endeavour, characterized by
+massive, complex, and heterogeneous datasets. This section provides an overview of this
+domain, the technological paradigms emerging to address its challenges, and the specific issues
+that motivate the present research.
+2.2.1 Overview of Data Management in the Pharmaceutical Industry
+A major challenge in the pharmaceutical world is that data is stored in a variety of formats.
+Information is spread across lab results in tables, academic articles, and clinical study reports.
+Previously pulling together and making sense of this disconnected data was a difficult and
+error-prone manual task performed by highly skilled specialists. This bottleneck makes
+research more expensive and slows down the pace of innovation.
+2.2.2 The Emergence of Retrieval-Augmented Generation (RAG)
+The Large Language Models (LLMs) have changed how we find information. They understand
+the meaning behind questions and can provide detailed answers. A newer approach called
+Retrieval-Augmented Generation (RAG) improves LLMs by first finding relevant facts from a
+privately held database and then using those facts to generate an answer. This makes the
+answers more accurate and traceable, which is essential for fields like pharmaceutical research.
+However, using this technology in the drug industry faces three major challenges:
+9
+w1953948/20220526
+
+===== PAGE 17/81 =====
+Pharmaceutical RAG Agent Chapter 02: Literature Review
+• High Cost: Using the best LLMs is expensive, making large-scale projects difficult to
+afford.
+• Complex Data: Important information is often split between text and tables in the same
+document. Standard systems struggle to connect this mixed data, leading to wrong
+answers.
+• Scale: The massive amount of data requires systems that are efficient and can grow
+without slowing down.
+2.2.3 Challenges in Pharmaceutical Data Retrieval
+Applying RAG to the pharmaceutical domain is hindered by three key challenges:
+1. High Operational Cost: Relying on paid LLM APIs for all queries is financially
+unviable at scale.
+2. The "Lost-in-Vectorization" Problem: Standard RAG systems treat all data as text.
+When they "chunk" and vectorize structured tables, they destroy their row-column
+integrity. This retrieves garbled, out-of-context fragments, leading to factually incorrect
+answers for multimodal queries.
+3. Inefficient Querying: A vector-only database is not optimized for the precise,
+structured lookups that tables require.
+2.2.4 Proposed Architectural Solution: The Hybrid-Retrieval RAG Agent
+This project proposes a Hybrid-Retrieval RAG Agent to solve these challenges. The
+architecture intelligently segregates data:
+1. Unstructured Text is stored in a Vector Database for semantic search.
+2. Structured Tables are stored in a SQL Database to preserve their integrity for precise,
+factual queries.
+This dual-storage system is orchestrated by a two-tier model cascade. This "brain" classifies
+incoming queries, routes them to the correct data source (Vector DB, SQL DB, or both), and
+intelligently allocates tasks to either a cheap local LLM or a powerful paid API, ensuring both
+accuracy and cost-efficiency.
+10
+w1953948/20220526
+
+===== PAGE 18/81 =====
+Pharmaceutical RAG Agent Chapter 02: Literature Review
+2.3 Existing Work
+This section provides a critical review of 20 key research papers and conference proceedings.
+The literature is analyzed to connect each source to its potential role in the project's pipeline,
+identify its limitations, and provide a critical review of its relevance to the proposed Hybrid-
+Retrieval (Vector DB + SQL DB) architecture.
+Methodo Critical
+Citation Summary & logy / Pipeline Limitatio review &
+& Link Contribution Approac Role ns Relevanc
+h e
+Critically
+Summary: Relevant.
+The seminal This
+paper that paper
+introduced Text- provides
+A pre-
+Retrieval- Only: the
+trained
+Augmented The foundatio
+dense
+Generation original nal RAG
+passage
+(RAG). framewor concept
+retriever
+k is that this
+(DPR)
+designed project is
+(Lewis et finds
+exclusive built
+al., 2020) relevant
+Contribution: Core ly for upon. Our
+text
+Established the Framewor unstructu project
+passages,
+RAG k red text extends
+which are
+framework, and has this by
+Link then fed
+proving that no replacing
+as context
+grounding mechanis its simple
+to a pre-
+LLMs with m for text
+trained
+external handling retriever
+generativ
+knowledge structured with a far
+e model
+improves data like more
+(BART).
+factual tables. complex
+accuracy and hybrid-
+reduces retrieval
+hallucinations. orchestrat
+or.
+Summary: An Not a Foundati
+Underpin
+(Vaswan
+The "Attention encoder- RAG onal.
+ning LLM
+i et al.,
+Is All You decoder System: Understan
+Architectu
+2017)
+Need" paper, model This is a ding this
+re
+which that relies foundatio paper is
+11
+w1953948/20220526
+
+===== PAGE 19/81 =====
+Pharmaceutical RAG Agent Chapter 02: Literature Review
+Methodo Critical
+Citation Summary & logy / Pipeline Limitatio review &
+& Link Contribution Approac Role ns Relevanc
+h e
+introduced the entirely nal essential
+Transformer on self- architectu for
+architecture. attention re, not a understan
+Link
+and practical ding why
+positional retrieval LLMs
+encoding system. It work,
+Contribution: s to defines which
+The self- process the informs
+attention sequence models, our model
+mechanism is s. not the cascade
+the foundation system (Tier-1
+of all modern that vs. Tier-
+LLMs, orchestrat 2) and
+enabling the es them. embeddin
+parallel scaling g model
+that made selections
+models like .
+GPT possible.
+Summary: Highly
+A
+Developed a Relevant.
+standard
+Lacks
+generic RAG This
+RAG
+Hybrid-
+system for paper
+pipeline
+Retrieval
+enterprise perfectly
+impleme
+and
+Q&A using a defines
+ntation
+Lacks
+single, high- the
+using a
+(Chen et Cost-
+performance "naive"
+state-of-
+al., 2022) Quantifi
+LLM. baseline
+the-art
+Baseline cation.
+system
+proprietar
+System Relies on
+that our
+y LLM,
+a single,
+project
+deployed
+Link expensive
+Contribution: to answer will be
+API and
+Demonstrated questions benchmar
+fails on
+the from ked
+multimod
+effectiveness of internal against.
+al
+RAG for company We aim to
+queries.
+improving document beat this
+answer s. on both
+accuracy in a cost
+12
+w1953948/20220526
+
+===== PAGE 20/81 =====
+Pharmaceutical RAG Agent Chapter 02: Literature Review
+Methodo Critical
+Citation Summary & logy / Pipeline Limitatio review &
+& Link Contribution Approac Role ns Relevanc
+h e
+corporate (text- (CER)
+only) setting. and
+accuracy
+(F1-
+score).
+Critically
+Relevant.
+This
+Summary:
+provides
+Proposed an
+A query the
+LLM routing
+classifica Unimoda academic
+system
+tion l Focus: justificati
+(cascade) to
+model The on for our
+direct simple
+that cascade entire
+user queries to
+routes logic is cost-
+smaller,
+(Rodrigu queries for saving
+cheaper
+ez et al., between a simple architectu
+models.
+2023) small, Model text re. Our
+cheap Cascade queries, project
+model (Tier 1) not for extends
+and a complex this by
+Contribution:
+Link large, hybrid- making
+Proved the
+expensiv retrieval the
+principle of
+e model (text/tabl cascade
+LLM cascades
+in a e) "smarter"
+as an effective
+conversat orchestrat —it's not
+strategy for
+ional AI ion. just a
+reducing
+setting. cost-
+operational
+saver, it's
+costs.
+the query
+orchestra
+tor.
+(Yue et Summary: A Text- Highly
+Model
+al., 2023) Proposed cascade Only Relevant.
+Cascade
+"LLM- decision- Reasonin This
+(Tier 1)
+Cascade," maker g: The paper
+which uses the that runs methodol gives us a
+13
+w1953948/20220526
+
+===== PAGE 21/81 =====
+Pharmaceutical RAG Agent Chapter 02: Literature Review
+Methodo Critical
+Citation Summary & logy / Pipeline Limitatio review &
+& Link Contribution Approac Role ns Relevanc
+h e
+Link "answer the ogy is specific,
+consistency" of cheaper designed testable
+a weaker LLM model for text- method
+to decide multiple based for our
+whether to times; if reasoning Tier-1
+escalate. the (e.g., query
+answers math classifier.
+are problems We can
+inconsist ), not for adapt this
+Contribution: ent, it multimod "consiste
+Provided a escalates al RAG. ncy" logic
+robust the query. to decide
+methodology if our
+for query local
+classification in LLM is
+a cascade, confident
+demonstrating enough to
+a 60% cost answer.
+reduction.
+Summary: Moderat
+A
+Introduces ely
+cascade Theoreti
+"early Relevant.
+where the cal
+abstention" in This
+cheaper, Framew
+LLM cascades, paper
+earlier ork:
+which is crucial provides a
+(Zhang models Focuses
+for risk- key
+et al., can on the
+sensitive insight for
+Model
+2024) decide to cascade
+domains like our
+Cascade
+"abstain" logic
+medicine. project:
+(Refineme
+if a query itself, not
+our Tier-1
+nt)
+is too the
+classifier
+Link difficult underlyin
+shouldn't
+or risky, g hybrid-
+Contribution: just route,
+preventin retrieval
+Refines the it should
+g an architectu
+cascade model also have
+incorrect re.
+by adding a the option
+answer.
+critical to
+"abstain" "abstain"
+14
+w1953948/20220526
+
+===== PAGE 22/81 =====
+Pharmaceutical RAG Agent Chapter 02: Literature Review
+Methodo Critical
+Citation Summary & logy / Pipeline Limitatio review &
+& Link Contribution Approac Role ns Relevanc
+h e
+(reject query) if a query
+feature, is
+reducing errors unanswer
+and costs. able,
+which
+improves
+system
+safety.
+Moderat
+ely
+Relevant.
+This
+Summary:
+reinforces
+Describes a Ignores
+the
+cascaded LLM Retrieval
+A two- validity of
+framework that : This
+stage the
+includes work is
+deferral cascade
+"human-in-the- about the
+and approach.
+loop" as the generatio
+(Fanconi abstentio Our
+final tier. n and
+et al., n policy project
+Model decision-
+2024) that focuses
+Cascade making
+routes on the
+(Refineme part, not
+queries to retrieval
+Contribution: nt) the
+a base aspect,
+Provides a retrieval
+Link model, a but this
+complete, part,
+large paper
+three-tier which is
+model, or shows the
+(cheap/expensi the core
+a human cascade is
+ve/human) of our
+expert. a state-of-
+architecture for RAG
+the-art
+cost- project.
+(SOTA)
+optimization.
+method
+for cost-
+efficiency
+.
+15
+w1953948/20220526
+
+===== PAGE 23/81 =====
+Pharmaceutical RAG Agent Chapter 02: Literature Review
+Methodo Critical
+Citation Summary & logy / Pipeline Limitatio review &
+& Link Contribution Approac Role ns Relevanc
+h e
+Highly
+Summary: Not a Relevant.
+Introduced RAG This
+TAPAS, a System: paper is
+BERT-based A BERT TAPAS key for
+model pre- model is a Q&A our
+trained for with model, Problem
+question special not a Definitio
+answering over embeddin retrieval n. It
+(Herzig
+tables. gs for agent. It proves
+et al., Table
+table works on that tables
+2020) Ingestion
+structure a single are a
+(Problem
+(rows, table and special
+Definition
+Contribution: columns) cannot be data type
+)
+Proved that that is integrated requiring
+Link
+models can fine- into a a special
+learn the row- tuned for scalable model,
+column Q&A on RAG which
+structure of single pipeline justifies
+tables to tables. that must our
+answer natural first find decision
+language the right to not
+questions. table. vectorize
+them.
+A Lossy Highly
+Summary:
+practical Conversi Relevant.
+Discusses the
+guide that on: This blog
+"Lost-in-
+uses Convertin post
+Vectorization"
+(Manjee,
+pdfplumb g a table perfectly
+Table
+problem,
+2024)
+er to to a text defines
+Ingestion
+proposing a
+extract summary the
+(Problem
+method to parse
+tables, is lossy. It "naive"
+Definition
+PDF tables into
+then an fails for baseline
+)
+text summaries
+Link
+LLM to precise we are
+using an LLM.
+"summari queries competin
+ze" the (e.g., g against.
+table into "value in Our SQL-
+a text row 5, col based
+16
+w1953948/20220526
+
+===== PAGE 24/81 =====
+Pharmaceutical RAG Agent Chapter 02: Literature Review
+Methodo Critical
+Citation Summary & logy / Pipeline Limitatio review &
+& Link Contribution Approac Role ns Relevanc
+h e
+Contribution: paragrap 3") and is approach
+Identifies the h, which not a true is
+exact problem is then hybrid demonstr
+this project vectorize solution. ably
+addresses: d. superior
+vectorizing to this
+tables destroys lossy
+their integrity. "summari
+zation"
+method.
+Summary: Moderat
+Analyzes the ely
+trade-off in Relevant.
+RAG Text-to- This
+SQL systems, SQL- paper
+noting that Only: informs
+An
+larger, detailed This our
+experime
+schema analysis system
+ntal paper
+documents is design. It
+that tests
+improve confined suggests
+Text-to-
+(Sahoo et accuracy but to the that when
+SQL
+al., 2024) also increase SQL SQL part we build
+performa
+hallucination. Retrieval of the our Tier-2
+nce based
+(Promptin problem Text-to-
+on the
+g) and does SQL
+size and
+Link not prompt,
+content of
+Contribution: integrate we must
+the
+Provides a semantic be careful
+retrieved
+benchmark for search to only
+schema
+the balance from a include
+context.
+between Vector the
+providing too DB. relevant
+much or too schema,
+little context to not the
+a Text-to-SQL entire DB
+model. schema.
+17
+w1953948/20220526
+
+===== PAGE 25/81 =====
+Pharmaceutical RAG Agent Chapter 02: Literature Review
+Methodo Critical
+Citation Summary & logy / Pipeline Limitatio review &
+& Link Contribution Approac Role ns Relevanc
+h e
+Highly
+Relevant.
+Lacks
+Summary: This
+Hybrid-
+Created a A proves
+Retrieval
+multimodal complex, that the
+: Relies
+model for single- text-table
+on a
+parsing and model fusion
+single,
+querying architectu problem
+(Gupta complex
+financial re is a
+and Li, model,
+reports (text designed significan
+2023) not a
+and tables). to read Problem t
+robust,
+and Definition challenge
+two-
+reason in other
+database
+over both domains
+Link (SQL +
+Contribution: text and (like
+Vector)
+Advanced the tables in finance).
+system.
+field of table- financial This
+Lacks
+text fusion in a document strengthe
+Cost-
+specific s. ns our
+Quantifi
+domain. project's
+cation.
+motivatio
+n.
+Summary: A Highly
+A survey
+Theoreti
+comprehensive Relevant.
+paper, not
+cal: As a
+survey of Text- This
+an
+survey, it
+to-SQL paper is
+impleme
+describes
+techniques, the
+ntation. It
+(Liu et the field
+covering the primary
+categoriz
+al., 2023) SQL but does
+entire lifecycle literature
+es and
+not
+Retrieval
+from modeling review for
+compares
+present a
+(Lit
+to evaluation. the SQL-
+dozens of
+single,
+Review)
+retrieval
+Text-to-
+deployabl
+Link
+half of our
+SQL
+e system,
+project. It
+models
+especially
+Contribution: gives us
+and
+not one
+Provides a benchmar the
+integrated
+complete ks. academic
+with a
+academic context
+18
+w1953948/20220526
+
+===== PAGE 26/81 =====
+Pharmaceutical RAG Agent Chapter 02: Literature Review
+Methodo Critical
+Citation Summary & logy / Pipeline Limitatio review &
+& Link Contribution Approac Role ns Relevanc
+h e
+overview of the Vector and
+Text-to-SQL DB. terminolo
+field, its gy to
+challenges, and discuss
+its state-of-the- our
+art. solution.
+SQL- Moderat
+Summary:
+Focused: ely
+Proposes a
+A RAG This Relevant.
+RAG-based
+system is architectu This
+Text-to-SQL
+used to re is still shows an
+system that
+find 100% advanced
+uses BERT for
+relevant focused technique
+vectorized
+schema on the for the
+retrieval and
+(Gao et informati SQL Text-to-
+GPT-4 for
+al., 2024) on or SQL problem. SQL
+query
+examples Retrieval It does compone
+generation.
+, which (Architect not solve nt. We
+are then ure) "hybrid" will be
+Link fed to an queries using a
+LLM to that also simpler
+Contribution:
+help it need version,
+Demonstrates
+write a unstructu but this
+using RAG to
+better red text paper
+improve a Text-
+SQL from a validates
+to-SQL system
+query. separate the RAG-
+(e.g., to find the
+document for-SQL
+right schema).
+. approach.
+A tutorial SQL- Critically
+(Sadekar Summary: showing Only: Relevant.
+Provides a how to This is a This is
+, 2024) SQL
+practical guide use guide for our
+Retrieval
+for building a LangChai a Text-to- implemen
+(Impleme
+Text-to-SQL n to build SQL tation
+ntation)
+application an agent agent, not guide. It
+Link
+using that can a Hybrid provides
+inspect a agent. It the exact
+19
+w1953948/20220526
+
+===== PAGE 27/81 =====
+Pharmaceutical RAG Agent Chapter 02: Literature Review
+Methodo Critical
+Citation Summary & logy / Pipeline Limitatio review &
+& Link Contribution Approac Role ns Relevanc
+h e
+LangChain and SQL cannot code and
+RAG. schema answer architectu
+and use questions ral pattern
+an LLM from for the
+to write unstructu SQL-
+Contribution: and red text. retrieval
+Offers a robust, execute half of our
+practical queries. agent,
+blueprint for which we
+the SQL- will then
+retrieval half combine
+of our project, with a
+including vector-
+prompt retrieval
+engineering half.
+and validation.
+Highly
+Relevant.
+Summary:
+This is a
+Introduced
+strong
+BioBERT, a
+Not a candidat
+language
+RAG e for our
+model pre-
+Continue System: vector
+trained on
+d pre- It's an embeddin
+biomedical text
+(Lee et training encoder g model.
+(e.g., PubMed). Text
+al., 2020) of the model, a Using
+Embeddin
+general potential BioBERT
+g
+BERT compone (or
+(Compone
+model on nt for our PubMedB
+Contribution: nt)
+Link biomedic text ERT)
+Established the
+al embeddin instead of
+significant
+corpora. g, but not a generic
+performance
+a full model
+benefits of
+solution. will
+domain-
+improve
+specific pre-
+our text
+training.
+retrieval
+accuracy.
+20
+w1953948/20220526
+
+===== PAGE 28/81 =====
+Pharmaceutical RAG Agent Chapter 02: Literature Review
+Methodo Critical
+Citation Summary & logy / Pipeline Limitatio review &
+& Link Contribution Approac Role ns Relevanc
+h e
+Summary: Highly
+Developed Relevant.
+Pre-
+PubMedBER This is
+training a
+T, pre-trained Not a likely the
+BERT
+from scratch on RAG best
+model
+PubMed System: candidat
+from the
+abstracts. This, like e for our
+ground
+BioBER embeddin
+(Gu et up using
+Text T, is a g model.
+al., 2021) a
+Embeddin candidate Its
+vocabular
+Contribution: g for the superior
+y and
+Proved that (Compone embeddin performa
+corpus
+pre-training nt) g model, nce on
+Link compose
+from scratch on not a biomedic
+d entirely
+a domain- complete al text
+of
+specific RAG will
+biomedic
+vocabulary is architectu directly
+al and
+superior to re. improve
+clinical
+continued pre- our text-
+texts.
+training (like retrieval
+BioBERT). quality.
+Summary: Graph- Highly
+Describes a Based, Relevant.
+Uses a
+Knowledge Not This
+Knowled
+Graph-RAG Hybrid: paper
+ge Graph
+framework for A provides
+(Baranzi (a more
+biomedicine, Knowled the core
+niLab, complex
+showing it ge Graph justificati
+2024) version of Project
+boosts Llama-2 is a on for our
+our SQL Justificati
+performance by different, project. It
+DB) to on
+71% on MCQs. more proves
+retrieve
+complex that for
+Link facts,
+architectu biomedic
+which are
+re than al data,
+fed to an
+Contribution: our structure
+LLM.
+Proves that proposed d
+grounding in SQL+Ve retrieval
+structured, ctor (like our
+21
+w1953948/20220526
+
+===== PAGE 29/81 =====
+Pharmaceutical RAG Agent Chapter 02: Literature Review
+Methodo Critical
+Citation Summary & logy / Pipeline Limitatio review &
+& Link Contribution Approac Role ns Relevanc
+h e
+domain- system. It SQL DB)
+specific data is also not beats
+dramatically cost- text-only
+improves quantifie retrieval.
+accuracy. d.
+Moderat
+Summary:
+ely
+Proposed Self-
+Relevant.
+RAG, a An LLM Ignores
+This
+framework that Retrieval
+informs
+where an LLM adaptivel Source:
+our
+reflects on its y Focuses
+Evaluatio
+own output to retrieves on
+n
+improve factual passages answer
+(Asai et (Chapter
+accuracy. and uses quality,
+al., 2023) Evaluatio 4). We
+"reflectio not the
+n can use
+n tokens" underlyin
+(Factualit the
+to g
+y) principles
+Contribution: critique retrieval
+Link of Self-
+Introduced an its own problem
+RAG to
+advanced generated from
+help
+technique for answer hybrid
+evaluate
+improving for (SQL/Ve
+the
+answer factuality ctor)
+faithfulne
+faithfulness, a . sources.
+ss of our
+key metric for
+agent's
+our project.
+answers.
+A suite of Evaluati Critically
+Summary:
+metrics on, Not Relevant.
+(Es et al., Introduced
+that use Architect This is the
+RAGAs, a
+2023)
+an LLM- ure: primary
+Evaluatio
+framework for
+as-a- RAGAs tool we
+n
+reference-free
+judge to is the will use
+(Metrics)
+evaluation of
+score a measure for our
+RAG pipelines
+Link
+RAG ment tool evaluatio
+(faithfulness,
+pipeline for our n chapter.
+answer
+on project, We will
+22
+w1953948/20220526
+
+===== PAGE 30/81 =====
+Pharmaceutical RAG Agent Chapter 02: Literature Review
+Methodo Critical
+Citation Summary & logy / Pipeline Limitatio review &
+& Link Contribution Approac Role ns Relevanc
+h e
+relevance, dimensio not the use
+etc.). ns like project RAGAs
+"Faithful itself. to
+ness" and benchmar
+"Context k our
+Contribution: Relevanc system's
+Provides the e" accuracy
+key evaluation without against
+tools needed needing a the
+for this project ground- baseline.
+to objectively truth
+measure RAG dataset.
+performance.
+Highly
+Relevant.
+Summary:
+This
+Describes a Lacks
+paper is a
+"SQL-RAG" Domain-
+direct
+system that A Specificit
+precedent
+combines practical y & Cost-
+for our
+LangChain and impleme Quantifi
+proposed
+LlamaIndex to ntation cation:
+architectu
+(Hao et query both that uses This is a
+re. Our
+al., 2024) SQL databases an LLM generic
+project
+Core RAG
+and text. to route a tool, not a
+builds on
+Framewor
+query to benchmar
+this by (1)
+k
+either a ked, cost-
+applying
+Link Text-to- quantifie
+it to the
+Contribution: SQL tool d system
+pharma
+Demonstrates a or a for the
+domain,
+foundational vector complex
+and (2)
+architecture for index. pharmace
+adding
+building a utical
+the
+hybrid- domain.
+critical
+retrieval agent.
+cost-
+quantific
+ation
+23
+w1953948/20220526
+
+===== PAGE 31/81 =====
+Pharmaceutical RAG Agent Chapter 02: Literature Review
+Methodo Critical
+Citation Summary & logy / Pipeline Limitatio review &
+& Link Contribution Approac Role ns Relevanc
+h e
+cascade
+on top.
+Moderat
+Summary:
+Not ely
+Describes
+SQL- Relevant.
+modern An article
+Hybrid: This helps
+Hybrid Search explainin
+This us refine
+as a g how
+"hybrid our
+combination of SOTA
+search" terminolo
+keyword RAG
+refers to gy. We
+(sparse) and combines
+(Keywor must be
+vector (dense) keyword
+(Day, d + clear that
+search. search Core RAG
+2024) Vector), our
+(for exact Framewor
+not our "Hybrid-
+matches) k
+project's Retrieval"
+and (Problem
+(SQL + is (SQL +
+Contribution: vector Def.)
+Link Vector), Vector),
+Provides the search
+which which is
+core principle (for
+solves a more
+of hybrid- semantic
+different, advanced
+retrieval: using matches)
+more than the
+the best tool for in a
+complex common
+the job single
+multimod (Keyword
+(precision vs. pipeline.
+al + Vector)
+semantic
+problem. hybrid
+meaning).
+search.
+Table 3: Chapter 2 Existing Work
+2.4 Dataset Selection
+The selection of an appropriate dataset is critical for the development and evaluation of the
+hybrid-retrieval RAG agent. The ideal dataset must be representative of the target domain and,
+most importantly, contain the two distinct data types (unstructured text and structured tables)
+required to populate the system's dual databases.
+24
+w1953948/20220526
+
+===== PAGE 32/81 =====
+Pharmaceutical RAG Agent Chapter 02: Literature Review
+2.4.1 Primary Dataset: PubMed Central Open Access Subset (PMC-OA)
+!"#$%&'() PMC-OA Dataset Summary (Shortened)
+The PubMed Central Open Access (PMC-OA) Subset is a free and public archive of millions
+of full-text which are peer-reviewed biomedical and life sciences articles are the core corpus
+for this project.
+Description
+The dataset includes articles in XML (valuable for preserving document structure, including
+tables and sections) and plain text formats.
+Suitability for Hybrid-Retrieval:
+• Vector Database: Unstructured text (abstracts, introductions) provides a large,
+domain-specific corpus for semantic search and text-based queries.
+• SQL Database: Highly structured tables (experimental results, patient data,
+statistics) will be parsed and loaded via the Table Ingestion Pipeline into the SQL
+Database for precise and factual querying.
+Intended Use
+The dataset will be used to build, validate, and benchmark the ingestion pipeline. It facilitates
+testing "hybrid queries" that require information from both the text and the tables of a single
+article.
+2.4.2 Supplementary Dataset: FDA Drug Labels on DailyMed
+To ensure the system's robustness and generalizability, the U.S. Food and Drug
+Administration (FDA) drug labels available on the DailyMed database will be used as a
+supplementary dataset.
+• Description: DailyMed provides high-quality, structured product labeling (SPL) for
+thousands of drugs. The SPL format is a well-defined XML that clearly delineates all
+text sections and tables.
+• Suitability for Hybrid-Retrieval:
+25
+w1953948/20220526
+
+===== PAGE 33/81 =====
+Pharmaceutical RAG Agent Chapter 02: Literature Review
+o For the Vector Database: The text-heavy sections (e.g., "Indications and
+Usage," "Warnings and Precautions," "Clinical Pharmacology") will be
+extracted and loaded into the Vector Database.
+o For the SQL Database: The highly regular and critical tables (e.g., "Adverse
+Reactions by Frequency," "Dosage and Administration") will be parsed and
+loaded into the SQL Database.
+• Intended Use: This dataset will be used to test the generalizability of the ingestion
+pipeline. It will prove that the system can handle a different document structure
+(regulatory vs. academic) and is therefore a robust solution.
+2.5 Benchmarking and Evaluation
+To validate the Hybrid-Retrieval RAG Agent, this section defines the evaluation metrics,
+compares the proposed system to existing work, and outlines the benchmarking strategy.
+2.5.1 Evaluation Metrics
+System performance will be measured across three key pillars:
+1. Retrieval & Classification: We will measure the Query Classification Accuracy (F1-
+score) of the Tier-1 LLM, Text Retrieval (Recall@k) from the Vector DB, and Table
+Retrieval (Execution Accuracy) from the SQL DB.
+2. Generation Quality: Using the RAGAs framework, we will assess the final answer's
+Accuracy (F1-score against a ground-truth answer), Faithfulness (is it grounded in the
+context?), and Relevance.
+3. Economic & Performance: We will measure the primary Cost-Efficiency Ratio
+(CER) by comparing API costs, as well as the end-to-end Latency.
+2.5.2 Comparative Analysis of Existing Models
+The table below highlights the research gap, showing that this project is the first to combine all
+necessary components.
+26
+w1953948/20220526
+
+===== PAGE 34/81 =====
+Pharmaceutical RAG Agent Chapter 02: Literature Review
+Domain-
+Hybrid-Retrieval Cost-Optimized
+Model / Framework Specific Generative
+(SQL + Vector) (Cascade)
+(Pharma)
+Standard RAG
+No (Vector-Only) No No Yes
+(Lewis et al., 2020)
+Table Q&A (Herzig
+No (SQL-Only) No No No
+et al., 2020)
+LLM Cascades (Yue
+No Yes No Yes
+et al., 2023)
+Text-to-SQL (Liu et
+No (SQL-Only) No No Yes
+al., 2023)
+Hybrid Tools (Hao et
+Yes No No Yes
+al., 2024)
+This Project's
+Yes Yes Yes Yes
+Proposed Agent
+Table 4: Comparative Analysis of Existing Models
+2.5.3 Benchmarking Strategy
+The evaluation will be a controlled experiment. We will compare a "Vector-Only RAG"
+(Baseline) against our "Hybrid-Retrieval RAG Agent" (Proposed). A ground-truth test set
+of ~100 questions (labeled as "text-only," "table-only," and "hybrid") will be used. We will run
+this test set through both systems, logging all metrics from 2.5.1 to provide a quantitative
+comparison of accuracy, cost, and latency.
+27
+w1953948/20220526
+
+===== PAGE 35/81 =====
+Pharmaceutical RAG Agent Chapter 03: Methodology
+2.6 Chapter Summary
+This chapter has provided a comprehensive literature review, establishing the context for the
+Hybrid-Retrieval RAG Agent. The review first defined the critical "Lost-in-Vectorization"
+problem (2.2.3), where standard RAG systems fail by destroying the integrity of structured
+tables.
+The survey of existing work (2.3) confirmed that solutions are siloed: standard RAG is text-
+only (Lewis et al., 2020), cost-cascades are unimodal (Yue et al., 2023), and Text-to-SQL
+frameworks (Liu et al., 2023) are not integrated with semantic text retrieval or cost-
+quantification.
+This analysis confirms a clear research gap: no existing work combines a hybrid (SQL +
+Vector) retrieval architecture with a cost-quantified model cascade in the pharmaceutical
+domain. Finally, the chapter identified suitable datasets (PMC-OA) and a robust benchmarking
+framework (2.5) using the CER and RAGAs metrics to validate this novel approach.
+Chapter 03: Methodology
+3.1 Chapter Overview
+This chapter explains our plan for the project. It covers our overall research approach including
+the technical plan for building and testing the system and the project management details which
+includes the timeline, resources, and a plan for handling risks.
+28
+w1953948/20220526
+
+===== PAGE 36/81 =====
+Pharmaceutical RAG Agent Chapter 03: Methodology
+3.2 Research Methodology (Saunders' Research Onion in Table Form)
+The research methodology for this project is structured using Saunders' Research Onion model
+to ensure a logical and coherent research design, from the philosophical underpinnings to the
+practical data collection techniques. The chosen layers of the onion are detailed in the table
+below.
+Figure 1:Saunder's Research Onion
+Layer Choice Justification (Shortened)
+Focuses on solving a practical problem by
+building a functional system; values
+Philosophy Pragmatism
+actionable knowledge and linking theory to
+practice.
+Starts with a testable hypothesis derived
+Approach Deductive
+from theory. An experiment will then be
+29
+w1953948/20220526
+
+===== PAGE 37/81 =====
+Pharmaceutical RAG Agent Chapter 03: Methodology
+Layer Choice Justification (Shortened)
+conducted to compare the proposed system
+against a baseline.
+Uses a quantitative approach focusing
+Methodological Mono Method solely on numerical data (costs, latency,
+Choice (Quantitative) F1-scores) from a controlled experiment for
+objective evaluation.
+Primary strategy is a controlled
+Experiment & Experiment to compare the RAG agent
+Strategy Archival against a baseline, supplemented by
+Research Archival Research using existing datasets
+(e.g., PubMed Central).
+Data collection and analysis occur at a
+single point in time to evaluate the
+Time Horizon Cross-sectional
+prototype's performance and validate its
+efficacy.
+Table 5: Research Methodology
+3.3 Development Methodology
+This section details the step-by-step process for developing the system prototype. We will
+describe how we gather requirements, plan the system's architecture, our approach to
+programming, and our strategy for testing. Together, these steps form a complete blueprint for
+how the final solution will work.
+30
+w1953948/20220526
+
+===== PAGE 38/81 =====
+Pharmaceutical RAG Agent Chapter 03: Methodology
+3.3.1 Requirement Elicitation Methodology
+To ensure the system is well designed and we will determine its requirements by:
+• Analyzing Pharmaceutical Documents: We will examine research papers and reports
+from datasets like PMC-OA and DailyMed to understand their structure and the
+questions a researcher would ask.
+• Using Our Literature Review: The research in Chapter 2 provides a list of modern
+techniques for data retrieval, cost-saving, and combining data types that the system
+must include.
+• Iterative Prototyping: We will build and test simple, early versions of the system to
+check our assumptions, discover technical challenges, and refine the plan.
+3.3.2 Design Methodology
+The project will adopt an object-oriented analysis and design methodology (OOADM). This
+approach is highly suitable for the proposed system architecture, which is inherently modular
+and component-based. OOADM will allow for the clear definition of distinct objects and
+classes for each component—such as the API Gateway, IngestionWorker,
+VectorDatabaseClient, and ModelCascadeRouter—promoting code reusability, scalability,
+and maintainability.
+3.3.3 Programming Paradigm
+The primary programming paradigm will be Object-Oriented Programming (OOP). This
+choice is naturally aligned with the selection of Python as the main development language and
+the use of frameworks like FastAPI and libraries such as LangChain, which are built upon OOP
+principles. This paradigm will facilitate the creation of a clean, modular, and scalable codebase.
+3.3.4 Testing Methodology
+A multi-layered testing methodology will be used to ensure the system is correct and valid:
+• Tier-1 Classifier Testing: The local LLM will be tested independently using a set of
+100 questions to measure its Query Classification Accuracy (F1-score) in correctly
+labeling queries ("text-only," "SQL-only," or "hybrid").
+31
+w1953948/20220526
+
+===== PAGE 39/81 =====
+Pharmaceutical RAG Agent Chapter 03: Methodology
+• Retrieval Unit Testing: We will test Vector DB text retrieval for Recall@k and SQL
+retrieval for Execution Accuracy using known-answer queries.
+• End-to-End System Testing: The full prototype will be compared against the "vector-
+only" baseline. This gathering will provide the main metrics: Cost-Efficiency Ratio
+(CER) and final Answer Accuracy (F1-score).
+3.3.5 Solution Methodology
+The development follows a structured, sequential pipeline that uses a dual-database ingestion
+system, abandoning standard table chunking.
+Key Stages
+1. Dataset Collection: Assemble the main corpus by downloading a subset of articles
+from PMC-OA and DailyMed.
+2. Hybrid Ingestion Pipeline: This core engineering task uses a custom script to process
+each document:
+o Text Processing: Unstructured text is extracted, cleaned, and chunked into
+semantic units.
+o Table Processing: Structured tables are extracted, cleaned, and standardized
+into a relational schema.
+3. Database Population (Dual Storage): Processed data is sent to two optimized
+databases:
+o Vector Database (e.g., Qdrant): Loads embedded text chunks (using a model
+like PubMedBERT) for semantic search.
+o SQL Database (e.g., SQLite): Loads standardized tables for precise, factual
+queries.
+4. Model Selection & Implementation:
+o Tier-1 LLM (Classifier): A small, efficient, local open-source LLM (e.g.,
+Mistral 7B variant) is used to classify the query type.
+32
+w1953948/20220526
+
+===== PAGE 40/81 =====
+Pharmaceutical RAG Agent Chapter 03: Methodology
+o Tier-2 LLM (Synthesizer): A powerful, paid API (e.g., Anthropic/OpenAI)
+handles the final, complex answer synthesis.
+5. Agent Orchestration: The "brain" (using LangChain or custom scripts) manages the
+process:
+o Receives query.
+o Passes query to Tier-1 Classifier.
+o Retrieves context from Vector DB, SQL DB, or both, based on classification.
+o Passes original query and context(s) to Tier-2 Synthesizer for the final answer.
+6. Testing & Feedback: The system undergoes rigorous evaluation (benchmarking).
+Results are used to refine components (e.g., classifier prompt, SQL schema, embedding
+model).
+3.4 Project Management Methodology
+To ensure this project is completed successfully and on schedule, we've defined a clear plan
+covering its scope, timeline, and potential risks.
+Project Scope
+To manage expectations, we've clearly defined what this project will and will not include.
+What this project will deliver:
+• A functioning proof-of-concept of the two-tier AI agent.
+• A data-processing system that can intelligently parse text and tables from documents.
+• A controlled experiment that benchmarks our system's performance.
+• A detailed evaluation focused on cost-efficiency, answer quality, and speed.
+• A final thesis report detailing the research and its findings.
+What is not included:
+33
+w1953948/20220526
+
+===== PAGE 41/81 =====
+Pharmaceutical RAG Agent Chapter 03: Methodology
+• A production-ready application with a graphical user interface (GUI).
+• Deployment into a live business environment.
+• Processing of continuous, real-time data.
+• Training a new large language model from scratch.
+3.4.2 Schedule
+3.4.2.1 Deliverables: Literature review, prototype development, final report submission.
+Delivarebles Dates
+Project Proposal
+Literature Review
+Software Requirement Specification
+Project Proposal – initial draft 2th Sep 2025
+Project Proposal and Requirement 24th Oct 2025
+Specification – final draft
+Project Proposal and Requirement 13th Nov 2025
+Specification – Final
+Proof of Concept
+Design Document
+Prototype 2nd Feb 2026
+Interim Project Demo 2nd Feb 2026
+Implementation
+Testing
+Evaluation
+Thesis Submission 1st Apr 2026
+Minimum Viable Product 1st Apr 2026
+…..
+Table 6: Deliverables
+3.4.3 Resource Requirements
+Successful completion of this project is contingent upon the availability of specific hardware,
+software, data, and technical skills.
+34
+w1953948/20220526
+
+===== PAGE 42/81 =====
+Pharmaceutical RAG Agent Chapter 03: Methodology
+3.4.3.1 Hardware
+A standard laptop or workstation (min. 8GB RAM) will be the central hub for all core
+development (writing code, managing small data subsets, and running parsing scripts).
+Cloud Computing (for GPU Tasks)
+Access to a cloud computing platform with GPU capabilities is required for two high-
+performance tasks:
+• Running the Tier 1 Local LLM: A service (like Google Colab or on-demand
+AWS/GCP) will host and run the quantized, open-source LLM.
+• Large-Scale Data Processing: A cloud GPU will be used for the initial, one-time process
+of efficiently embedding the full document corpus.
+3.4.3.2 Software
+● Programming Language: Python (version 3.10 or higher).
+● Core Libraries:
+○ Machine Learning: PyTorch, Transformers (from Hugging Face), Scikit-learn.
+○ RAG & Orchestration: LangChain or a similar framework.
+○ Web Framework: FastAPI for creating the API gateway.
+○ Data Handling: Pandas, NumPy.
+○ Document Parsing: pdfplumber, lxml.
+● Vector Database: A self-hosted, open-source vector database such as Qdrant or
+Weaviate.
+● Development Environment: Visual Studio Code with Python extensions, Jupyter
+Notebooks for experimentation.
+3.4.3.3 Data
+● Primary Corpus: A large, curated subset of the PubMed Central Open Access (PMC-
+OA) dataset, containing full-text biomedical research articles.
+● Supplementary Corpus: A collection of structured drug labels obtained from the
+DailyMed database to test the system's generalizability.
+3.4.3.4 Skills
+35
+w1953948/20220526
+
+===== PAGE 43/81 =====
+Pharmaceutical RAG Agent Chapter 03: Methodology
+The project requires expertise in four main areas:
+• Machine Learning : Strong knowledge, especially in Natural Language Processing
+(NLP), LLM architectures, and the Retrieval-Augmented Generation (RAG)
+framework.
+• Python Programming: Advanced proficiency in Python, including Object-Oriented
+Programming (OOP) and experience with relevant software libraries.
+• Data Science & Engineering: Expertise in data cleaning, preprocessing, and
+engineering, with a focus on parsing complex documents containing both text and
+tables.
+• System Architecture: Ability to design, implement, and integrate modular, API-driven
+systems.
+3.4.4 Risk and Mitigation (Expanded with Severity and Frequency)
+Risk Exposure = Probability of Occurance * Magnitude of Loss
+A proactive risk management plan is essential for anticipating and addressing potential
+challenges throughout the project lifecycle. The following table identifies key risks, assesses
+their potential impact using a risk exposure score, and outlines specific mitigation strategies.
+The risk exposure is calculated as the product of Severity (1-5) and Frequency (1-5).
+Risk S F RE Mitigation Strategy
+Ineffective Build and test the Tier-1 classifier on a manually
+5 3 15
+Query Classifier labeled test set to ensure high F1-score.
+Failed Text-to-
+Do not let the LLM write raw SQL. Use the
+5 2 10
+SQL Query
+LLM only to extract entities (e.g., drug name,
+36
+w1953948/20220526
+
+===== PAGE 44/81 =====
+Pharmaceutical RAG Agent Chapter 03: Methodology
+Risk S F RE Mitigation Strategy
+dosage), then use safe, pre-written Python/SQL
+templates.
+Implement robust validation and error-logging.
+PDF Table
+Focus on a "good enough" pipeline that
+Parsing (ETL) 4 4 16
+correctly parses 80% of tables, rather than a
+Failure
+perfect one.
+Table 7: Risk Mitigation
+3.4 Chapter Summary
+This chapter has comprehensively detailed the "how" of the project, covering the research,
+development, and management methodologies.
+It began by establishing the Research Methodology (Section 3.2), using Saunders' Research
+Onion to justify the selection of a Pragmatic philosophy and a Deductive, quantitative
+experimental approach.
+The chapter then transitioned to the core technical plan in the Development Methodology
+(Section 3.3). This section detailed the novel architecture of the hybrid-retrieval RAG agent.
+It outlined the specific solution pipeline, starting with the dual-database ingestion process:
+parsing unstructured text into a Vector Database and structured tables into a SQL Database.
+It also defined the implementation of the two-tier model cascade, which acts as the system's
+"brain" for query classification and cost-saving orchestration.
+Finally, the Project Management Methodology (Section 3.4) was presented. This section
+provided the practical roadmap for implementation, defining a clear project scope, a detailed
+schedule and GANTT chart, specific resource requirements, and a proactive risk
+management plan. This risk plan was updated to address the new, specific technical challenges
+of the hybrid architecture, such as classifier accuracy and Text-to-SQL reliability.
+37
+w1953948/20220526
+
+===== PAGE 45/81 =====
+Pharmaceutical RAG Agent Chapter 04: Software Requirement
+Specification (SRS)
+Chapter 04: Software Requirement Specification (SRS)
+4.1 Chapter Overview
+The Software Requirement Specification (SRS) chapter provides a detailed analysis of the
+system’s requirements, how they were gathered, the stakeholders involved, their viewpoints,
+and the functional and non-functional requirements of the system. It also includes visual
+representations such as the Rich Picture Diagram, Stakeholder Onion Model, Context Diagram,
+and Use Case Diagram to help understand the system’s flows and interactions. Requirements
+are prioritized using the MoSCoW principle to ensure the focus on what is essential for the
+system's success.
+4.2 Rich Picture Diagram
+The Rich Picture Diagram (RPD) represents the system and its environment. It provides a high-
+level, informal view of the system’s interactions with its users, stakeholders, and processes. It
+aids in visualizing the complexity of the project and identify important areas of concern,
+potential conflicts, and interactions.
+The following diagram shows the environment for the Hybrid-Retrieval RAG Agent,
+showing the flow of data from ingestion to the final user, and the key stakeholders and technical
+components involved.
+Figure 2: Rich Picture Diagram
+4.3 Stakeholder Analysis
+Stakeholder analysis is a crucial process for identifying all parties. It includes who will interact
+with, will be affected by, or have an interest in the Hybrid-Retrieval RAG Agent.
+Understanding their diverse needs and expectations is essential for defining the system's
+requirements.
+38
+w1953948/20220526
+
+===== PAGE 46/81 =====
+Pharmaceutical RAG Agent Chapter 04: Software Requirement
+Specification (SRS)
+4.3.1 Stakeholder Onion Model
+The following model categorizes stakeholders into four primary layers:
+4.3.2 Stakeholder List and Viewpoints
+• The System (Core):
+o Hybrid-Retrieval RAG Agent: The software product itself, including both the
+databases (Vector DB, SQL DB) and the model cascade orchestrator.
+• Users (Directly Interact):
+o Pharmaceutical Researcher / Scientist: (Primary User)
+§ Viewpoint: "I need fast, accurate, and traceable answers. I must be able
+to trust the information, especially when it comes from a table. The
+system must be able to understand my complex, domain-specific
+questions."
+o Data Scientist:
+§ Viewpoint: "I need to be able to evaluate the system's accuracy. I need
+to understand its performance metrics (CER, F1-score) and potentially
+refine its models."
+• Business (Internal Stakeholders):
+o R&D Management / Project Sponsor:
+§ Viewpoint: "This system must provide a clear return on investment. It
+needs to reduce API costs (justifying the CER) and demonstrably
+accelerate our research and drug discovery timelines."
+o System Developer (Student):
+§ Viewpoint: "I need to successfully build and test a novel, functional
+prototype that meets all the academic and technical objectives defined
+in the proposal."
+• The Environment (External Stakeholders):
+o Pharmaceutical Companies (Wider Industry):
+§ Viewpoint: "We are interested in any new, validated architecture that
+can reduce our massive R&D data processing costs and improve
+accuracy."
+o Data Providers (e.g., PubMed, FDA):
+§ Viewpoint: "Our data must be used in accordance with our access
+policies, and its limitations must be understood."
+39
+w1953948/20220526
+
+===== PAGE 47/81 =====
+Pharmaceutical RAG Agent Chapter 04: Software Requirement
+Specification (SRS)
+4.4 Elicitation Techniques
+To define the system's functional and non-functional requirements, the following elicitation
+approach will be used:
+• 1. Literature Review:
+o Description: An in-depth review of existing research (as detailed in Chapter 2)
+was conducted to identify already established problems, a baseline for system
+features, and important evaluation metrics (like RAGAs, CER, and F1-score)
+used in the academic community.
+• 2. Stakeholder Interview:
+o Description: A semi-structured interview will be conducted with a Data
+Analyst who has experience in the business intelligence or data science field.
+o Justification: This interview is critical for gathering a real-world perspective
+on the problem. It will help to:
+§ Validate the project's core assumptions.
+§ Understand how a technical user would actually query a complex system
+(text vs. SQL).
+§ Define the practical requirements for answer traceability, accuracy, and
+performance (latency).
+• 3. Archival Research:
+o Description: A direct study of the primary data sources (PubMed Central and
+DailyMed) was done.
+o Justification: This technical investigation was necessary to define the
+requirements of the ingestion pipeline (e.g., handling inconsistent table
+structures, parsing XML) and to confirm the need of a hybrid (SQL + Vector)
+storage solution.
+40
+w1953948/20220526
+
+===== PAGE 48/81 =====
+Pharmaceutical RAG Agent Chapter 04: Software Requirement
+Specification (SRS)
+4.5 Discussion of Findings
+4.5.1 Literature Review Findings
+Finding 1: Standard RAG systems are "unimodal" (text-only) and fail when they encounter
+structured data, a problem known as "Lost-in-Vectorization."
+• Conclusion: Naively vectorizing tables destroys their row-column integrity, leading to
+garbled context and factually incorrect answers. This confirms that a separate,
+specialized handling for tables (like a SQL database) is required.
+• Citation: (Manjee, 2024); (Herzig et al., 2020)
+Finding 2: Current research is siloed. Text-to-SQL frameworks focus only on relational data,
+while RAG systems focus only on unstructured text.
+• Conclusion: There is a distinct lack of unified systems that can orchestrate a single
+query across both structured (SQL) and unstructured (Vector) databases to answer a
+"hybrid" question.
+• Citation: (Liu et al., 2023); (Hao et al., 2024)
+Finding 3: Most RAG architectures ignore operational cost, relying on a single, expensive
+LLM API for all tasks.
+• Conclusion: This "single-model" approach is financially unviable at scale. LLM
+Cascades are a proven, state-of-the-art method for cost-optimization, but they have not
+been integrated with hybrid-retrieval systems.
+• Citation: (Yue et al., 2023); (Rodriguez et al., 2023)
+4.5.2 Interviews Findings
+Codes Themes Conclusion
+"Manual data Data
+A primary user pain point is the manual effort
+joining" Fragmentation
+required to link unstructured text (reports)
+41
+w1953948/20220526
+
+===== PAGE 49/81 =====
+Pharmaceutical RAG Agent Chapter 04: Software Requirement
+Specification (SRS)
+Codes Themes Conclusion
+with structured data (tables). This validates
+the need for a hybrid-retrieval system.
+"Split data
+sources"
+"Text and
+database
+lookup"
+"Source
+citation"
+For an answer to be trusted, it must be 100%
+"Need for Answer traceable. The system Must provide source
+verification" Traceability links to the exact text chunk and table row
+used.
+"Don't trust
+'black box'"
+"Accuracy
+over speed"
+Users strongly prefer a slower, perfectly
+"Cost of bad
+Primacy of accurate answer over a fast, 'mostly correct'
+decisions"
+Accuracy one. This prioritizes retrieval/generation
+quality over latency.
+"100% correct"
+42
+w1953948/20220526
+
+===== PAGE 50/81 =====
+Pharmaceutical RAG Agent Chapter 04: Software Requirement
+Specification (SRS)
+Codes Themes Conclusion
+"Wrong
+answer is
+dangerous"
+"API cost
+scrutiny"
+"Budget
+approval"
+Cost-Efficiency as Cost-quantification (the CER) is a critical
+a Core adoption feature, not just a bonus. The model
+Requirement cascade is a key business justification.
+"Cost-saving
+as feature"
+"Justifying
+expense"
+"Silent query
+failure"
+Users fear "plausible but wrong" answers
+Structured Data from tables. This validates that using precise
+"Plausible but
+Integrity SQL retrieval instead of "lossy" vector
+wrong"
+summarization of tables.
+"Missed a row"
+Table 8: Interview Findings
+43
+w1953948/20220526
+
+===== PAGE 51/81 =====
+Pharmaceutical RAG Agent Chapter 04: Software Requirement
+Specification (SRS)
+4.7 Context Diagram
+The Context Diagram (also known as a Level 0 Data Flow Diagram) depicts the high-level
+boundary of the Hybrid-Retrieval RAG Agent. It models the system as a singular and central
+process and identifies all external entities (such as users, other systems, and data stores) that
+interact with the system. The diagram shows the key data flows (inputs and outputs) between
+the system and these external entities. It provides a clear, formal overview of the system's scope
+and its interactions.
+Figure 3: Context Diagram
+4.8 Use Case Diagram
+The Use Case Diagram illustrates the system's functionalities (use cases) and how external
+actors interact with them, defining the functional requirements of the Hybrid-Retrieval RAG
+Agent.
+4.8.1 Actors
+• Pharmaceutical Researcher: Primary user looking for answers from the system.
+• Data Scientist / Admin: Technical user responsible for system evaluation and
+performance monitoring.
+44
+w1953948/20220526
+
+===== PAGE 52/81 =====
+Pharmaceutical RAG Agent Chapter 04: Software Requirement
+Specification (SRS)
+• <<Secondary>> Tier-2 Paid LLM API: External LLM service called for complex
+answer synthesis.
+4.8.2 Use Cases
+• Query System with Natural Language: Main function for Pharmaceutical Researcher
+to submit their questions.
+o <<includes>> Classify Query (Tier-1): Local LLM categorizes query intention.
+o <<includes>> Retrieve Hybrid Context: System fetches data from Vector DB
+and/or SQL DB.
+• Synthesize with Tier-2 API: <<extends>> Query System with Natural Language for
+complex queries gets escalated to the external LLM.
+• Manage & Evaluate System: For Data Scientist / Admin to test and monitor system
+performance.
+Figure 4: Use Case Diagram
+4.9 Use Case Descriptions
+This section provides a description of the primary use cases identified in the Use Case Diagram.
+45
+w1953948/20220526
+
+===== PAGE 53/81 =====
+Pharmaceutical RAG Agent Chapter 04: Software Requirement
+Specification (SRS)
+Use Case ID: UC-001
+Use Case Name: Query System with Natural Language
+Primary Actor: Pharmaceutical Researcher
+Secondary Actor: Tier-2 Paid LLM API
+Priority: High
+Description: This use case describes the main function of the system. The researcher submits
+a query in plain English. The system then orchestrates the full hybrid-retrieval and model
+cascade pipeline to return a synthesized, and cost-effective answer.
+Main Flow (Successful Scenario):
+1. The Pharmaceutical Researcher submits a natural language query via the system
+interface.
+2. The system receives the query and passes it to the Tier-1 (local) LLM for classification.
+3. The Tier-1 LLM classifies the query intent (e.g., "text-only," "sql-only," or "hybrid").
+4. The system orchestrator executes the retrieval plan:
+o If "text-only," it performs a semantic search on the Vector Database.
+o If "sql-only," it uses the Text-to-SQL tool on the SQL Database.
+o If "hybrid," it performs both retrievals in parallel.
+5. The system gathers the retrieved context(s).
+6. The system identifies that the query is complex enough to require escalation to the paid
+API (based on the classifier's decision).
+7. [Extension Point] The query is escalated to the Tier-2 Paid LLM API. The system
+sends the original query and all retrieved context.
+8. The Tier-2 Paid LLM API synthesizes the context and gives out a final answer.
+46
+w1953948/20220526
+
+===== PAGE 54/81 =====
+Pharmaceutical RAG Agent Chapter 04: Software Requirement
+Specification (SRS)
+9. The system receives the answer from the API.
+10. The system presents the unified synthesized answer and its sources (e.g., text snippets,
+table references) to the Pharmaceutical Researcher.
+Alternative Flows:
+• 6a. (Simple Query): The Tier-1 classifier determines the query is simple and can be
+answered by the local LLM. The system skips escalation to the Tier-2 API, synthesizes
+the answer locally, and proceeds to step 10.
+Post-conditions:
+• The researcher's query is answered.
+• The cost and latency of the query are logged for evaluation.
+Use Case ID: UC-002
+Use Case Name: Manage & Evaluate System
+Primary Actor: Data Scientist / Admin
+Priority: Medium
+Description: This use case describes the "backend" function for a technical person to test
+metrics such as system's performance and accuracy..
+Main Flow (Successful Scenario):
+1. The Data Scientist / Admin accesses the system's evaluation interface or scripts.
+2. The Data Scientist / Admin submits a batch of test queries (the Ground-Truth
+Evaluation Set).
+3. The system runs each test query through the full UC-001 pipeline.
+4. The system logs the performance for each query:
+47
+w1953948/20220526
+
+===== PAGE 55/81 =====
+Pharmaceutical RAG Agent Chapter 04: Software Requirement
+Specification (SRS)
+o The generated answer.
+o The retrieved context.
+o The total API cost incurred.
+o The end-to-end latency.
+5. The Data Scientist / Admin runs an evaluation script to compare the generated answers
+against the ground-truth answers, calculating the F1-score and Faithfulness.
+6. The Data Scientist / Admin runs a script to aggregate all logged costs and calculates the
+final Cost-Efficiency Ratio (CER).
+7. The system provides all metrics (F1, CER, Latency) to the Data Scientist / Admin for
+analysis.
+Post-conditions:
+• The system's performance is quantitatively benchmarked.
+• The Data Scientist / Admin has the metrics needed for the project's final evaluation.
+4.10 Functional & Non-functional Requirements
+This section defines the functional ("what it does") and non-functional ("how well it does it")
+requirements for the prototype. They are categorized using the MoSCoW method (Must Have,
+Should Have, Could Have, Won't Have).
+4.10.1 Functional Requirements
+Priority
+ID Requirement Description
+(MoSCoW)
+The system must ingest and process unstructured text into a Vector
+FR01 Must Have
+Database.
+48
+w1953948/20220526
+
+===== PAGE 56/81 =====
+Pharmaceutical RAG Agent Chapter 04: Software Requirement
+Specification (SRS)
+Priority
+ID Requirement Description
+(MoSCoW)
+The system must ingest and process structured tables into a SQL
+FR02 Must Have
+Database.
+FR03 The system must accept a natural language query from the user. Must Have
+The system must use the Tier-1 (local) LLM to classify the query's
+FR04 Must Have
+intent (text, sql, hybrid).
+The system must retrieve context from the Vector DB for
+FR05 Must Have
+text/hybrid queries.
+The system must retrieve context from the SQL DB for sql/hybrid
+FR06 Must Have
+queries.
+The system must synthesize a final answer using the Tier-2 (paid)
+FR07 Must Have
+LLM for complex queries.
+The system should provide source references for the retrieved
+FR08 Should Have
+context.
+The system monitor the API cost and latency for each query to
+FR09 Should Have
+calculate the CER.
+The system could provide a basic web-based UI for submitting
+FR10 Could Have
+queries.
+49
+w1953948/20220526
+
+===== PAGE 57/81 =====
+Pharmaceutical RAG Agent Chapter 04: Software Requirement
+Specification (SRS)
+Priority
+ID Requirement Description
+(MoSCoW)
+The system won’t have user authentication or multi-user accounts
+FR11 Won't Have
+in this prototype.
+Table 9: Functional Requirements
+4.10.2 Non-functional Requirements
+Priority
+ID Requirement Description
+(MoSCoW)
+Accuracy (Faithfulness): The system must generate answers that
+NFR01 are factually supported in the retrieved context (Vector DB or SQL Must Have
+DB).
+Cost-Efficiency: The system must demonstrate a measurably lower
+NFR02 Must Have
+Cost-Efficiency Ratio (CER) than the vector-only baseline.
+Performance (Latency): The system should return a synthesized
+NFR03 Should Have
+answer for a hybrid query within 15 seconds.
+Scalability (Ingestion): The ingestion pipeline should be able to
+NFR04 Should Have
+process at least 1,000 documents.
+Usability: The system could have an intuitive interface that clearly
+NFR05 Could Have
+differentiates the query input from the output answer.
+50
+w1953948/20220526
+
+===== PAGE 58/81 =====
+Pharmaceutical RAG Agent Chapter 04: Software Requirement
+Specification (SRS)
+Priority
+ID Requirement Description
+(MoSCoW)
+Availability: The system won’t have 24/7 high-availability or real-
+NFR06 Won't Have
+time fault tolerance.
+Table 10: Non-functional Requirements
+4.11 Chapter Summary
+This chapter detailed the Software Requirement Specification (SRS) for the Hybrid-
+Retrieval RAG Agent.
+It began with the Rich Picture Diagram and Stakeholder Analysis, illustrating the system's
+environment and key actors. The Elicitation Techniques, including a stakeholder interview,
+were outlined. The Context Diagram formally defined the system boundary, while the Use
+Case Diagram and Descriptions mapped out its primary functionalities, including the
+conditional use of the Tier-2 LLM. Finally, the Functional and Non-functional
+Requirements were specified and prioritized (MoSCoW), emphasizing accuracy, cost-
+efficiency, and hybrid data processing as core objectives.
+51
+w1953948/20220526
+
+===== PAGE 59/81 =====
+Pharmaceutical RAG Agent Chapter 5: Social, Legal, Ethical and
+Professional Issues (SLEP)
+Chapter 5: Social, Legal, Ethical and
+Professional Issues (SLEP)
+5.1 Chapter Overview
+This chapter addresses the Social, Legal, Ethical, and Professional (SLEP) considerations
+critical to the development and deployment of the Cost-Quantified, Hybrid-Retrieval RAG
+Agent for pharmaceutical Q&A. As an AI system designed to retrieve and synthesize
+information from pharmaceutical databases, it must navigate complex regulatory frameworks,
+ethical boundaries, and professional standards. The integration of Large Language Models
+with pharmaceutical data sources raises important questions about data privacy, algorithmic
+transparency, intellectual property rights, and potential societal impacts. This chapter
+systematically identifies key SLEP issues and proposes concrete mitigation strategies for
+each concern.
+5.2 SLEP Issues and Mitigation
+Category & Issue Description Mitigation Strategy
+SOCIAL
+Access Inequality High API costs may exclude Implement tiered pricing with free
+resource-constrained researchers tier for academic/non-profit
+and institutions in developing researchers. Open-source core
+countries, creating a two-tier architecture to enable self-hosting.
+system where well-funded entities Partner with global health
+accelerate drug discovery while organizations to subsidize access
+others fall behind, widening global for underserved populations.
+health equity gaps.
+Professional Automation may threaten roles of Position as augmentation tool
+Displacement pharmaceutical information requiring expert oversight. Design
+specialists and medical librarians features for professional validation
+who provide critical literature and annotation. Provide training
+review and evidence synthesis programs for AI-augmented
+services. researcher roles.
+Over-Reliance Users may uncritically accept AI- Display confidence scores with
+generated responses as definitive explicit warnings. Provide
+answers in high-stakes prominent source citations with
+pharmaceutical contexts where verification links. Include
+52
+w1953948/20220526
+
+===== PAGE 60/81 =====
+Pharmaceutical RAG Agent Chapter 5: Social, Legal, Ethical and
+Professional Issues (SLEP)
+errors could have serious disclaimers emphasizing
+consequences, particularly given informational purpose only.
+LLM hallucination risks. Implement query logging and
+usage audits.
+LEGAL
+Data Privacy Processing pharmaceutical data Use encrypted transmission (TLS
+(GDPR/HIPAA) through third-party LLM APIs 1.3+). Select LLM providers with
+raises concerns about data GDPR/HIPAA-compliant DPAs.
+sovereignty, cross-border Support self-hosted deployment
+transfers, and compliance with option. Implement data
+GDPR/HIPAA. Queries may classification and sensitive content
+contain proprietary drug detection. Encrypt logs at rest with
+formulations or confidential RBAC and 90-day retention.
+research data.
+Intellectual Retrieving and synthesizing Only ingest content with explicit
+Property copyrighted pharmaceutical permission or text mining licenses.
+literature raises questions about Implement access controls
+fair use, derivative works, and mirroring source licensing.
+licensing. Vector embeddings and Provide proper attribution in all
+synthesized responses may violate responses. Prevent document
+copyright or licensing terms. reconstruction. Clear terms of
+service on fair use boundaries.
+Liability If the system provides incorrect Explicit disclaimers in terms of
+information leading to patient service ('as-is', informational
+harm, regulatory violations, or only). Validation testing against
+drug development errors, benchmarks. Red-team testing for
+questions arise about who is dangerous misinformation. Route
+legally responsible: developers, high-risk queries to more capable
+LLM providers, pharmaceutical models. Maintain audit logs.
+companies, or end users. Professional liability insurance.
+Position as decision support, not
+autonomous decision-maker.
+ETHICAL
+Algorithmic Bias Training data biases may manifest Diversify sources including
+as geographic bias (Western international databases, negative
+research prioritized), publication results journals, and multilingual
+bias (positive findings over- content. Implement diversity-
+represented), language bias (non- promoting ranking factors. Regular
+English excluded), or commercial bias auditing with test queries.
+53
+w1953948/20220526
+
+===== PAGE 61/81 =====
+Pharmaceutical RAG Agent Chapter 5: Social, Legal, Ethical and
+Professional Issues (SLEP)
+bias (industry-funded studies Display source distribution to
+favored). users. Ethics advisory board for
+ongoing oversight.
+Transparency Complex AI components operate Implement explainability
+as 'black boxes.' Users receive dashboard showing: model routing
+synthesized answers without decisions, retrieval strategies used,
+understanding how conclusions similarity scores, generated SQL
+were reached, which sources were queries, source rankings,
+prioritized, or what limitations conflicting information handling.
+exist, undermining scientific Granular citation annotation.
+reproducibility. Chain-of-thought reasoning
+display. Support query replay with
+different settings.
+Dual-Use Risk System could be misused for Content filtering for dangerous
+bioweapon development, illegal queries using keyword and
+drug synthesis, pharmaceutical semantic analysis. User
+counterfeiting, regulatory evasion, authentication with tiered access
+or enabling dangerous self- based on credentials. Rate limiting
+medication by non-experts and anomalous usage detection.
+accessing complex pharmaceutical Comprehensive audit logs with
+information. security team review.
+Collaboration with regulatory/law
+enforcement. Controlled release of
+high-risk components.
+PROFESSIONAL
+Standards Development must adhere to Follow software engineering best
+Compliance professional standards from ACM, practices (Git, code review,
+IEEE, healthcare technology CI/CD, comprehensive testing).
+organizations (AMIA, HIMSS), Engage in professional
+and AI ethics frameworks (EU AI development (conferences,
+Act, WHO AI in health training). Multi-disciplinary
+guidelines). Requires documented advisory board. Professional ethics
+processes enabling peer review. training for team. Transparent
+documentation of capabilities and
+limitations.
+Environmental Large-scale LLM usage requires Optimize model cascade for
+Impact massive computational power with energy efficiency with carbon
+significant carbon footprint. Single intensity consideration. Aggressive
+GPT-4 query equivalent to driving caching of common queries.
+several miles. Creates tension Energy-efficient vector database
+54
+w1953948/20220526
+
+===== PAGE 62/81 =====
+Pharmaceutical RAG Agent Chapter 5: Social, Legal, Ethical and
+Professional Issues (SLEP)
+between environmental configuration. Batch processing
+responsibility and pharmaceutical during low-demand periods.
+research acceleration. Carbon footprint tracking
+dashboard. Partner with carbon-
+neutral LLM providers. Purchase
+carbon offsets.
+5.3 Chapter Summary
+This chapter has systematically analyzed the Social, Legal, Ethical, and Professional (SLEP)
+considerations critical to developing a responsible AI system for pharmaceutical research.
+The analysis identified ten key issues across four dimensions: social concerns about access
+inequality, professional displacement, and over-reliance on AI; legal challenges regarding
+data privacy compliance, intellectual property rights, and liability frameworks; ethical issues
+encompassing algorithmic bias, transparency deficits, and dual-use risks; and professional
+responsibilities for standards compliance and environmental sustainability.
+For each identified issue, concrete mitigation strategies have been proposed that will be
+integrated throughout the system's architecture and development lifecycle. These include
+technical safeguards (encryption, content filtering, bias auditing), operational measures
+(tiered access, transparent documentation, audit logging), and governance frameworks
+(advisory boards, professional training, terms of service). By proactively addressing SLEP
+considerations, the project ensures that the Cost-Quantified, Hybrid-Retrieval RAG Agent
+will be not only technically robust and cost-efficient but also socially responsible, legally
+compliant, ethically sound, and professionally rigorous.
+The comprehensive mitigation strategies demonstrate that responsible AI development in
+healthcare requires simultaneous attention to technical excellence and societal impact. The
+next chapter will detail the system design, showing how the technical architecture
+incorporates these SLEP considerations, ensuring that responsible AI principles are
+embedded at every level of implementation.
+55
+w1953948/20220526
+
+===== PAGE 63/81 =====
+Pharmaceutical RAG Agent Chapter 6: Design
+Chapter 6: Design
+6.1 Chapter Overview
+This chapter describes the design of the Pharmaceutical RAG Agent (Pharmask) and how that design
+supports the system’s functional and non-functional objectives. The design phase bridges
+requirements (e.g. hybrid retrieval, cost-efficient two-tier LLM use, source citations) and the
+implemented pipeline:
+• Tier-1 query classification, dual retrieval (vector and SQL)
+• Tier-2 answer synthesis.
+The chapter is structured as follows. Section 6.2 states design goals aligned with non-functional
+requirements (performance, usability, accuracy, scalability, security). Section 6.3 presents the high-
+level system architecture and data flow. Section 6.4 gives detailed design using an object-oriented
+approach (main components and their interactions). Section 6.5 describes the AI/ML design
+(classification and synthesis). Section 6.6 covers UI design and key usability and accessibility
+choices. Section 6.7 summarises the design and its contribution to the system goals.
+6.2 Design Goals
+Design goals are defined to satisfy the intended quality attributes and non-functional requirements.
+Each goal is reflected in the architecture and in the current implementation.
+• Performance: The system is designed to complete a full query (classification, retrieval,
+synthesis) within a target latency (e.g. under 15 seconds for hybrid synthesis). Design
+choices that support this include:
+1. using a fast Tier-1 model (e.g. Groq Llama 3.1 8B) for classification and optional
+SQL generation
+2. Limiting vector results via a configurable top_k (e.g. 5) and SQL result caps (e.g. 20
+rows)
+3. Asynchronous processing in the orchestrator and retrievers. Implementation:
+RAGOrchestrator runs classify → retrieve → synthesize in sequence; latency is
+measured in the FastAPI /query endpoint and returned in QueryResponse.latency_ms.
+• Usability: The system is designed to be usable with minimal training. The primary interaction
+is a single query box and a clear presentation of the answer, classification, sources, and
+cost/latency. Design decisions: one main action (submit query), visible loading state, and
+structured display of classification (query type, confidence, reasoning), source references,
+and optional cost breakdown. Implementation: app/templates/index.html provides a single
+form, loading spinner, and sections for answer, classification, sources, and cost/latency.
+• Accuracy: Accuracy is addressed at three levels: (1) classification accuracy — Tier-1 must
+correctly route queries to text, sql, or hybrid; the design uses a dedicated classifier with a
+structured prompt and JSON output (query_type, confidence, reasoning). (2) Retrieval
+relevance — vector search uses semantic embeddings (sentence-transformers) and
+configurable top_k; SQL uses an LLM-generated read-only query over a fixed schema with
+rules (e.g. SELECT only, limit 20). (3) Answer faithfulness — the synthesis prompt
+instructs the model to use only provided context and to cite sources (e.g. [Source:
+<source_id>]). Implementation: QueryClassifier, VectorRetriever, SQLRetriever, and
+AnswerSynthesizer each implement these rules; evaluation in PharmaEvaluator measures
+classification accuracy and keyword coverage.
+56
+w1953948/20220526
+
+===== PAGE 64/81 =====
+Pharmaceutical RAG Agent Chapter 6: Design
+• Scalability: The design allows scaling data and load within the current prototype scope. (1)
+Data: Ingestion is file-based and batch-oriented; documents are chunked (configurable
+chunk_size/chunk_overlap) and stored in ChromaDB and SQLite so that more documents
+can be added via the same pipeline. (2) Computation: Tier-1 and Tier-2 are external API
+calls; the application is stateless so that horizontal scaling of the FastAPI layer is possible.
+(3) Configuration: Providers and models (Tier-1/Tier-2) are configurable via Settings (e.g.
+tier1_provider, tier2_model) so that heavier models can be used if needed. Implementation:
+IngestionWorker supports XML, PDF, and JSON; Settings in app/config.py centralises
+retrieval and model settings.
+• Security: The design addresses security at the level of a prototype/demo. (1) API access: No
+authentication is implemented; the design assumes a controlled or local deployment. (2)
+SQL safety: The SQL retriever is designed to generate only read-only queries (SELECT)
+and to avoid arbitrary execution; the prompt and schema constrain the LLM output. (3)
+Secrets: API keys are not hardcoded; they are loaded from environment variables via
+Pydantic Settings. Implementation: SQLRetriever uses a prompt that explicitly requires
+“ONLY SELECT statements”; Settings reads from .env and does not log keys.
+6.3 System Architecture Diagram
+Diagram: A high-level system architecture diagram should show a layered/tiered structure. The
+following description can be used to draw it (e.g. as Figure 6.1).
+Layers/tiers:
+1. Presentation layer: Web browser and minimal UI (single-page form and results).
+Communicates with the API layer via HTTP (GET /, POST /query, POST /ingest, GET
+/health).
+2. API layer: FastAPI application (app/main.py). Exposes REST endpoints, measures latency,
+and delegates query processing to the orchestration layer. No business logic beyond
+request/response handling.
+3. Orchestration layer: RAGOrchestrator. Coordinates the pipeline: (1) call Tier-1 classifier,
+(2) call hybrid retriever (vector and/or SQL based on classification), (3) call Tier-2
+synthesizer, (4) merge sources and compute cost. Depends on classifier, retriever, and
+synthesizer services.
+4. Service layer:
+• QueryClassifier (Tier-1): Uses a cloud LLM (Groq/Gemini/OpenAI) with a fixed
+prompt to output query_type (text | sql | hybrid), confidence, and reasoning.
+• HybridRetriever: Uses classification to invoke VectorRetriever and/or SQLRetriever;
+merges and deduplicates sources.
+• VectorRetriever: Embeds query, searches ChromaDB, returns top-k chunks and source
+references.
+• SQLRetriever: Uses Tier-1 LLM to generate a read-only SQL query, executes it via
+SQLClient, returns rows and source references.
+• AnswerSynthesizer (Tier-2): Uses a powerful LLM (e.g. GPT-4o, Claude) with a
+prompt that takes query, text context, and SQL context and produces an answer with
+citations.
+5. Data layer:
+• ChromaDB: Persisted vector store (chroma_persist_dir) for document chunks and
+embeddings.
+• SQLite: Relational store (pharma.db) with tables such as drugs, indications, dosages,
+adverse_reactions, interactions.
+Both are used at query time by the retrievers and are populated by the ingestion pipeline.
+57
+w1953948/20220526
+
+===== PAGE 65/81 =====
+Pharmaceutical RAG Agent Chapter 6: Design
+Ingestion pipeline (offline/batch): IngestionWorker reads from a directory (XML/PDF/JSON), parses
+with XMLParser, PDFParser, JSONParser, chunks text with TextChunker, and loads chunks into
+ChromaDB and structured data into SQLite via VectorClient and SQLClient.
+6.4 Detailed Design
+The detailed design follows an object-oriented approach. The purpose of each diagram is stated; the
+descriptions are based on the actual implementation.
+Class diagram (main components)
+Purpose: Show the main types and their dependencies.
+58
+w1953948/20220526
+
+===== PAGE 66/81 =====
+Pharmaceutical RAG Agent Chapter 6: Design
+Key classes:
+• RAGOrchestrator: Holds references to QueryClassifier, HybridRetriever, AnswerSynthesizer;
+has process_query(query) -> QueryResponse and _merge_sources(retrieval_sources,
+synthesis_sources).
+• QueryClassifier: Uses ChatPromptTemplate (classification prompt), JsonOutputParser, and a
+Tier-1 BaseChatModel; method classify(query) -> (QueryClassification, tokens).
+• HybridRetriever: Holds VectorRetriever and SQLRetriever; method retrieve(query,
+classification) -> (RetrievalResult, tokens); branches on classification.query_type (text →
+vector only; sql → SQL only; hybrid → both).
+• VectorRetriever: Uses VectorClient and settings.vector_top_k; method retrieve(query,
+filter_metadata?) -> dict (chunks, sources).
+• SQLRetriever: Uses SQLClient, Tier-1 LLM, and a SQL generation prompt; method
+retrieve(query) -> (dict, tokens) (rows, sources).
+• AnswerSynthesizer: Uses Tier-2 LLM and synthesis prompt; method synthesize(query,
+retrieval_result) -> (answer, sources, tokens).
+• IngestionWorker: Uses XMLParser, PDFParser, JSONParser, TextChunker, VectorClient,
+SQLClient; method ingest_directory(directory) -> IngestionResult.
+6.5 Algorithm Design
+The main AI/ML logic is (1) query classification and (2) answer synthesis. SQL generation in
+SQLRetriever is also LLM-based and can be described as a third algorithm.
+1. Query classification (Tier-1)Purpose: Map a natural-language pharmaceutical query to one of
+{text, sql, hybrid} so that the correct retrieval path(s) are used.How it works (step by step):
+a. User query string is received.
+b. The query is inserted into the fixed classification prompt (categories and examples for
+text, sql, hybrid, plus instructions such as “if in doubt prefer hybrid”).
+c. The Tier-1 LLM (e.g. Groq Llama 3.1 8B) is invoked with temperature 0.
+d. The model output is parsed as JSON (query_type, confidence, reasoning).
+e. The result is validated into a QueryClassification object and returned; token count is
+tracked for cost.
+Pseudocode:
+FUNCTION classify(query: string) -> (QueryClassification,
+token_count):
+prompt = CLASSIFICATION_PROMPT.format(query=query)
+raw_output = Tier1_LLM.invoke(prompt)
+parsed = JSON.parse(raw_output) // query_type, confidence,
+reasoning
+RETURN (QueryClassification(parsed), tokens_used)
+2. Answer synthesis (Tier-2)Purpose: Produce a single, context-grounded answer with citations
+from the retrieved text chunks and SQL rows.How it works (step by step):
+a. The retrieval result (text chunks and sql rows) is formatted into a text block and a
+SQL-context block.
+59
+w1953948/20220526
+
+===== PAGE 67/81 =====
+Pharmaceutical RAG Agent Chapter 6: Design
+b. The synthesis prompt is filled with query, text_context, and sql_context. The prompt
+states: use only provided context, cite with [Source: <source_id>], be precise for
+numbers, note conflicts.
+c. The Tier-2 LLM (e.g. GPT-4o or Claude 3.5 Sonnet) is invoked with low temperature
+(e.g. 0.2).
+d. The model’s reply is the answer string; source references from the retrieval result
+(and any identified during synthesis) are attached.
+e. Token count for Tier-2 is recorded for cost calculation.
+Pseudocode:
+FUNCTION synthesize(query, retrieval_result) -> (answer, sources,
+token_count):
+text_context = format(retrieval_result.text_chunks)
+sql_context = format(retrieval_result.sql_rows)
+prompt = SYNTHESIS_PROMPT.format(query=query,
+text_context=text_context, sql_context=sql_context)
+answer = Tier2_LLM.invoke(prompt)
+sources = retrieval_result.sources // plus any from synthesis
+RETURN (answer, sources, tokens_used)
+3. SQL generation (Tier-1, inside SQLRetriever)
+a. Purpose: Generate a read-only SQL query that answers the user question against the
+fixed pharmaceutical schema (drugs, indications, dosages, adverse_reactions,
+interactions).
+b. How it works: The user question is injected into a prompt that describes tables and
+columns and rules (SELECT only, LIMIT 20, use LIKE for text, include source_doc).
+The Tier-1 LLM returns a single query string; the code checks for “NO_QUERY”
+and for allowed keywords (SELECT), then executes the query via the SQL client and
+maps rows to source references.
+c. Flowchart (high level): Query → Tier-1 prompt (schema + question) → LLM →
+parse SQL → validate read-only → execute → return rows + sources.
+6.6 UI Design
+Low-fidelity wireframe (conceptual): The interface is a single scrollable page.
+At the top: title “Pharmaceutical RAG Agent” and subtitle (e.g. “Hybrid RAG with Tier-1
+classification and Tier-2 synthesis”).
+Below: one large text input (placeholder e.g. “Ask a pharmaceutical question…”) and a single
+“Search” or “Submit” button.
+When the user submits, a loading indicator (e.g. spinner) is shown. Below that: a results area with
+clear sections
+(1) Answer (paragraph(s)),
+(2) Classification (query type, confidence, reasoning)
+60
+w1953948/20220526
+
+===== PAGE 68/81 =====
+Pharmaceutical RAG Agent Chapter 6: Design
+(3) Sources (list of source_type, source_id, title, snippet)
+(4) Cost/latency (e.g. Tier-1/Tier-2 tokens, total cost, latency ms).
+(5) Error messages appear in a dedicated area (e.g. red text or alert).
+No separate screens; everything is on one page.
+Design decisions:
+• Usability: Single query box and one primary action reduce cognitive load and support the
+main task (asking one question and reading the answer). Grouping answer, classification,
+sources, and cost in fixed sections makes it easy to assess both content and system
+behaviour. Showing classification and reasoning supports transparency and debugging.
+Loading state prevents duplicate submissions and sets expectations. The layout is
+responsive (e.g. container max-width, padding) so it works on different screen sizes.
+• Accessibility: The page uses semantic structure (e.g. header, form, sections) and a visible
+focus style on the input (e.g. border colour change on focus). Placeholder and button labels
+describe purpose. Colour contrast uses a defined palette (e.g. primary, background, text,
+error). The implementation uses standard form elements and CSS; further improvements
+could include ARIA labels for the query input and results regions, and a skip link if the
+page grows.
+Final UI: The implemented UI in app/templates/index.html matches this design: CSS variables for
+colours, a single form with #query-input and submit button, loading spinner, and sections for answer,
+classification, sources, and cost. Final screenshots can be placed in an appendix and referenced here.
+6.7 Chapter Summary
+This chapter presented the design of the Pharmaceutical RAG Agent. The design goals (performance,
+usability, accuracy, scalability, security) were stated and linked to concrete design choices and to the
+current implementation (orchestrator, classifier, hybrid retriever, synthesizer, ingestion, API, and
+UI).The system architecture was described in terms of layers: presentation (browser UI), API
+(FastAPI), orchestration (RAGOrchestrator), services (classifier, vector/SQL retrieval, synthesis), and
+data (ChromaDB, SQLite), with a separate ingestion pipeline.
+Data flow for the query path (user → API → classify → retrieve → synthesize → response) and
+interactions between components were specified to support drawing a high-level architecture diagram.
+Detailed design used an object-oriented view: main classes (RAGOrchestrator, QueryClassifier,
+HybridRetriever, VectorRetriever, SQLRetriever, AnswerSynthesizer, IngestionWorker) and their
+responsibilities, plus Pydantic schemas for requests and responses. Sequence and activity diagrams
+were outlined for the query flow and for retrieval branching.Algorithm design covered the three LLM-
+based steps:
+1. Tier-1 query classification (prompt → JSON → QueryClassification),
+2. Tier-2 answer synthesis (context + prompt → cited answer)
+3. Tier-1 SQL generation (schema + question → read-only query → execution).
+Pseudocode and a short flowchart description were provided. UI design was described with a low-
+fidelity wireframe (single page, one query box, results with answer, classification, sources,
+61
+w1953948/20220526
+
+===== PAGE 69/81 =====
+Pharmaceutical RAG Agent Chapter 7: Implementation
+cost/latency) and design decisions for usability and accessibility, aligned with the implemented
+template.Overall, the design ties the system’s objectives—accurate routing, hybrid retrieval, cost-
+efficient two-tier LLM use, and traceable answers—to the described architecture, components,
+algorithms, and UI, and provides a clear basis for implementation and evaluation (e.g. classification
+accuracy, keyword coverage, and cost metrics in Chapter 5 or in the evaluation script).
+Chapter 7: Implementation
+7.1 Chapter Overview
+This chapter describes how the design of the Pharmaceutical RAG Agent (Pharmask) was translated into a
+working system. The implementation phase realises the architecture, class structure, and algorithms defined in
+Chapter 6 into executable code, deployable services, and a usable interface.
+The chapter first justifies the technology selection (Section 7.2), including the programming language,
+framework, libraries, and tooling. Section 7.3 describes the implementation of core functionalities: the query
+pipeline, ingestion, retrieval, and evaluation modules, including code structure and module integration. Section
+7.4 covers the user interface implementation and its integration with the backend. Section 7.5 discusses
+challenges encountered during implementation and the solutions applied. Section 7.6 summarises the
+implementation and readiness for testing.
+7.2 Technology Selection
+Technology choices were driven by the need for async API handling, multiple LLM providers, vector
+and relational storage, document parsing, and a simple web UI—while keeping the stack maintainable
+and aligned with the two-tier RAG design.
+7.2.1 Technology Stack
+The overall stack is organised as follows:
+Layer Technology Role
+Runtime Python 3.x Application and scripts
+Web / API FastAPI, Uvicorn REST API and HTTP server
+LLM LangChain (core, OpenAI, Anthropic, Prompts, chains, multi-
+orchestration Google Genai, Groq) provider LLMs
+62
+w1953948/20220526
+
+===== PAGE 70/81 =====
+Pharmaceutical RAG Agent Chapter 7: Implementation
+Vector store ChromaDB Embeddings and semantic
+search
+Relational store SQLite + SQLAlchemy Structured pharmaceutical
+tables
+Embeddings sentence-transformers Local embedding model for
+ChromaDB
+Document lxml, pypdf, pdfplumber XML, PDF parsing
+processing
+Validation / config Pydantic, pydantic-settings Schemas and environment-
+based config
+Frontend HTML, CSS, vanilla JavaScript Single-page query UI
+Testing pytest, pytest-asyncio Unit and async tests
+Evaluation rank-bm25, scikit-learn Baselines and metrics
+Data datasets, huggingface-hub PMC-OA dataset download
+7.2.2 Programming Languages
+Python: The project is implemented entirely in Python. Python was chosen for:
+1) Strong support for async I/O (asyncio), required for non-blocking LLM and retrieval calls
+2) Mature ecosystems for ML and LLM integration (LangChain, sentence-transformers)
+3) Fast prototyping and readability for research-oriented code
+4) Wide support for ChromaDB, SQLAlchemy, and FastAPI. No other primary language was used
+for the backend or services.
+63
+w1953948/20220526
+
+===== PAGE 71/81 =====
+Pharmaceutical RAG Agent Chapter 7: Implementation
+7.2.3 Development Framework
+FastAPI: FastAPI was selected as the web and API framework because it is async-native, which
+aligns with the async query pipeline (classify → retrieve → synthesize). It provides automatic
+OpenAPI documentation, request/response validation via Pydantic, and minimal boilerplate. The
+application entry point is app/main.py, which defines the FastAPI app, mounts templates, and
+registers routes for /, /health, POST /query, and POST /ingest. Uvicorn is used as the ASGI server
+(e.g. uvicorn app.main:app --reload --port 8000), supporting hot reload during development.
+7.2.4 Libraries / Toolkits
+Key libraries and their purpose in the implementation:
+Library Purpose
+langchain-core, langchain- Prompt templates (ChatPromptTemplate), LLM wrappers for
+openai, langchain-anthropic, Tier-1 (Groq/Gemini/OpenAI) and Tier-2 (OpenAI/Anthropic),
+langchain-google-genai, and output parsing (e.g. JsonOutputParser for classification).
+langchain-groq
+chromadb Persistent vector store for document chunks; used by
+VectorClient for add/search with configurable top_k.
+sqlalchemy SQLite engine, session management, and DDL for tables (drugs,
+indications, dosages, adverse_reactions, interactions) in
+SQLClient.
+sentence-transformers Local embedding model for encoding queries and documents
+before storage and search in ChromaDB.
+lxml Parsing PMC-OA and DailyMed XML in XMLParser.
+pypdf, pdfplumber PDF text and table extraction in PDFParser.
+pydantic, pydantic-settings Request/response models (QueryRequest, QueryResponse,
+QueryClassification, etc.) and configuration (Settings) loaded
+from .env.
+64
+w1953948/20220526
+
+===== PAGE 72/81 =====
+Pharmaceutical RAG Agent Chapter 7: Implementation
+httpx Used by LangChain for HTTP calls to LLM APIs.
+python-dotenv Loading .env for API keys and paths.
+jinja2 Server-side rendering of the single HTML template (index.html)
+for the root route.
+datasets, huggingface-hub Downloading PMC-OA dataset (e.g. via
+scripts/download_pmc_dataset.py).
+rank-bm25, scikit-learn BM25 baseline and metrics in the evaluation package.
+pytest, pytest-asyncio Unit tests (e.g. classifier tests in tests/test_classifier.py) and
+async test support.
+7.2.5 Integrated Development Environments (IDEs)
+Development was carried out using modern code editors and IDEs that support Python, such as
+Visual Studio Code (VS Code), with Python extension for debugging, linting, and test execution.
+These IDEs provide good support for virtual environments, requirements.txt, and project structure.
+The project can be run from the terminal (e.g. uvicorn app.main:app --reload) without IDE-specific
+configuration. No proprietary or project-specific IDE setup is required.
+7.2.6 Summary of Technology Selection
+The chosen stack fits the system because:
+1) FastAPI + Python enable an async, validated API that matches the pipeline’s I/O-bound nature;
+2) LangChain abstracts multiple LLM providers and keeps prompt/chain logic consistent across
+Tier-1 and Tier-2
+3) ChromaDB and SQLite provide lightweight, file-based persistence for vectors and tables
+without operational overhead
+4) Pydantic ensures type-safe contracts between API, orchestrator, and services
+5) Sentence-transformers allow offline embeddings for ChromaDB. Together, these choices
+support modular development, clear separation between orchestration and retrieval/synthesis, and
+straightforward testing and evaluation.
+65
+w1953948/20220526
+
+===== PAGE 73/81 =====
+Pharmaceutical RAG Agent Chapter 7: Implementation
+7.3 Core Functionalities Implementation
+7.3.1 Dataset Description and Splits (AI/ML)
+● Evaluation dataset: The pharmaceutical evaluation uses a dedicated dataset at
+data/evaluation/pharma_qa_dataset.json. Each item includes: question text, expected query_type
+(text, sql, hybrid), expected source, ground-truth keywords for answer quality, and difficulty. The
+evaluator (app/evaluation/pharma_evaluator.py) loads this JSON and runs each question through
+the full pipeline; there are no train/validation/test splits—the dataset is used for end-to-end
+evaluation of classification accuracy, retrieval coverage, keyword coverage, and cost.
+● Ingestion data: Document data comes from XML (PMC-OA, DailyMed), PDF, or JSON files
+placed under a configurable directory (e.g. data/documents). The PMC-OA subset can be obtained
+via the Hugging Face datasets library and scripts (e.g. scripts/download_pmc_dataset.py). No
+formal dataset splits are used for ingestion; the system indexes whatever documents are placed in
+the ingest directory.
+7.3.2 Modular Development
+The implementation is organised into clear modules:
+● `app/main.py`: FastAPI app, route definitions, and latency measurement; no business logic
+beyond calling the orchestrator and ingestion worker.
+● `app/config.py`: Settings (Pydantic BaseSettings) for Tier-1/Tier-2 providers and models, API
+keys, ChromaDB and SQLite paths, retrieval settings (e.g. vector_top_k, chunk_size,
+chunk_overlap).
+● `app/models/schemas.py`: Pydantic models for API and pipeline: QueryRequest,
+QueryResponse, QueryClassification, SourceReference, RetrievalResult, CostBreakdown,
+IngestionResult.
+● `app/db/`: VectorClient (ChromaDB singleton) and SQLClient (SQLite singleton with
+SQLAlchemy); used by retrieval and ingestion.
+● `app/services/orchestrator.py`: RAGOrchestrator—instantiates classifier, retriever, and
+synthesizer; implements process_query(query) and _merge_sources().
+● `app/services/classifier/`: QueryClassifier—Tier-1 prompt, LLM invocation, JSON parsing to
+QueryClassification.
+● `app/services/retrieval/`: VectorRetriever, SQLRetriever, HybridRetriever—vector search,
+SQL generation and execution, and routing by query_type.
+● `app/services/synthesis/`: AnswerSynthesizer—Tier-2 prompt, context formatting, and
+answer generation with source references.
+● `app/services/ingestion/`: IngestionWorker, XMLParser, PDFParser, JSONParser,
+TextChunker—file discovery, parsing, chunking, and loading into ChromaDB and SQLite.
+● `app/services/cost_calculator.py`: Token-based cost calculation and CostBreakdown for
+Tier-1 vs Tier-2.
+● `app/evaluation/`: PharmaEvaluator, dataset loading, metrics aggregation, and report
+generation; baselines (e.g. BM25, context-provided RAG) for comparison.
+66
+w1953948/20220526
+
+===== PAGE 74/81 =====
+Pharmaceutical RAG Agent Chapter 7: Implementation
+Each service is designed to be testable in isolation (e.g. classifier tests mock the LLM) and to depend
+on interfaces (e.g. retriever returns RetrievalResult) rather than concrete I/O details.
+7.3.3 Code Structure
+Directory layout:
+app/
+├── main.py # FastAPI app and routes
+├── config.py # Settings
+├── models/
+│ └── schemas.py # Pydantic models
+├── db/
+│ ├── vector_client.py # ChromaDB client
+│ └── sql_client.py # SQLite client
+├── services/
+│ ├── orchestrator.py
+│ ├── cost_calculator.py
+│ ├── classifier/
+│ │ └── query_classifier.py
+│ ├── retrieval/
+│ │ ├── vector_retriever.py
+│ │ ├── sql_retriever.py
+│ │ └── hybrid_retriever.py
+│ ├── synthesis/
+│ │ └── answer_synthesizer.py
+│ └── ingestion/
+│ ├── worker.py
+│ ├── xml_parser.py
+│ ├── pdf_parser.py
+│ ├── json_parser.py
+│ └── chunker.py
+├── evaluation/ # Pharma evaluator, baselines, metrics
+└── templates/
+└── index.html # Single-page UI
+The orchestrator imports services at runtime (e.g. inside the route handler) to avoid circular imports.
+Configuration and schema types are shared via app.config.settings and app.models.
+7.3.4 Module Integration
+● Query path: POST /query receives a QueryRequest; main.py measures start time,
+instantiates RAGOrchestrator, and calls await orchestrator.process_query(request.query). The
+orchestrator calls classifier.classify(query), then retriever.retrieve(query, classification), then
+synthesizer.synthesize(query, retrieval_result), then _merge_sources() and calculate_cost(), and
+returns a QueryResponse. The route sets response.latency_ms and returns the response (and cost) to
+the client.
+● Ingestion path: POST /ingest?data_dir=... instantiates IngestionWorker and calls await
+worker.ingest_directory(Path(data_dir)). The worker discovers XML/PDF/JSON files, uses the
+67
+w1953948/20220526
+
+===== PAGE 75/81 =====
+Pharmaceutical RAG Agent Chapter 7: Implementation
+appropriate parser to produce a ParsedDocument, chunks text via TextChunker, and loads chunks
+and tables via VectorClient and SQLClient; it returns an IngestionResult with counts and errors.
+● Evaluation: scripts/run_pharma_eval.py loads the pharma QA dataset, creates
+PharmaEvaluator, and runs the evaluator over each question using the same RAGOrchestrator;
+results and metrics are printed and optionally saved to data/evaluation/results/.
+7.4 User Interface Implementation
+7.4.1 Frontend Components
+The user interface is a single HTML page (app/templates/index.html) with embedded CSS and
+JavaScript. It includes:
+● Header: Title “Pharmaceutical RAG Agent” and subtitle describing the hybrid RAG system.
+● Query form: A single text input (placeholder “Ask a pharmaceutical question…”) and an
+“Ask” submit button; the button shows a loading spinner and is disabled while a request is in
+progress.
+● Response container: Initially hidden; shown when a response is received. It displays:
+○ A classification badge (text / sql / hybrid) with colour coding.
+○ Latency (e.g. “1234 ms”).
+○ The synthesized answer in a readable block.
+○ An optional cost panel: total cost, Tier-1 and Tier-2 cost and token counts, total tokens,
+latency, and savings vs Tier-2-only.
+○ A sources section: list of source items with type (text/table), title/source_id, and snippet.
+● Error message area: Shown when the API returns an error (e.g. 500 or validation error);
+displays the error detail.
+● Example queries: Buttons for sample text, sql, and hybrid questions; clicking one fills the
+input and triggers submit.
+● Footer: Short line describing the system (e.g. “Powered by Hybrid RAG with Tier-1
+classification and Tier-2 synthesis”).
+Styling uses CSS variables for colours (primary, background, surface, text, border, success, error) and
+responsive layout (max-width container, padding). Classification and source-type badges use distinct
+colours (e.g. blue for text, green for sql, amber for hybrid).
+7.4.2 Backend Integration
+The frontend uses the Fetch API to send POST /query with a JSON body { "query": "<user input>" }
+and Content-Type: application/json. The response is expected to be the QueryResponse JSON (query,
+answer, classification, sources, latency_ms, cost, etc.).
+On success, a displayResponse(data) function updates the DOM: classification badge, latency, answer
+text, cost panel (if data.cost is present), and source list. Cost formatting (e.g. “< $0.0001” for very
+68
+w1953948/20220526
+
+===== PAGE 76/81 =====
+Pharmaceutical RAG Agent Chapter 7: Implementation
+small values) is done in JavaScript. On failure, the error message element is shown with the server’s
+error detail.
+The page is served by FastAPI via GET / using Jinja2 (templates.TemplateResponse("index.html",
+{"request": request})), so the same origin is used for API calls and no CORS configuration is required
+when using the default deployment (same host/port).
+7.4.3 Accessibility Considerations
+The page uses semantic structure (header, form, sections) and a single main form with a labelled
+submit action. The query input uses a placeholder and can be given an explicit label or aria-label for
+screen readers. Focus styles are applied (e.g. border colour change on #query-input:focus) to support
+keyboard navigation. Button disabled state during loading prevents double submission and is visible
+(opacity change). Colour contrast follows a defined palette (e.g. primary blue on white, error red).
+Further improvements could include ARIA live regions for dynamic content (answer, errors) and a
+visible skip link if the page grows.
+7.5 Challenges and Solutions
+7.5.1 Debugging
+● Challenge: Tracing errors across async calls (classifier → retriever → synthesizer) and
+multiple LLM providers.
+● Solution: Structured logging (e.g. logger.info in orchestrator and services) records
+classification result, retrieval counts, and token/cost summary. Exceptions are caught at the route
+level and returned as HTTP 500 with a detail message. FastAPI’s automatic validation surfaces
+Pydantic errors for malformed requests. For local debugging, DEBUG=true and
+LOG_LEVEL=INFO (or DEBUG) in .env help; the orchestrator is imported inside the route to
+simplify stack traces and avoid circular import issues.
+7.5.2 Performance Issues
+● Challenge: Keeping end-to-end latency acceptable (e.g. target &lt;15 seconds) when calling
+Tier-1, then retrieval (vector + optional SQL with Tier-1 for SQL generation), then Tier-2.
+● Solution: (1) Use a fast Tier-1 model (e.g. Groq Llama 3.1 8B) and limit retrieval size
+(vector_top_k, SQL row limit) to reduce payload and Tier-2 time. (2) Use async throughout so I/O-
+bound waits do not block the event loop. (3) Vector search is synchronous in the current
+implementation but runs in a thread-friendly way; SQL execution is fast for small result sets. (4)
+Latency is measured in main.py and returned in the response so it can be monitored and tuned.
+7.5.3 Resource Constraints
+● Challenge: Large document sets and embedding computation during ingestion; memory for
+sentence-transformers and ChromaDB.
+● Solution: (1) Ingestion is batch and file-based; documents are processed sequentially so
+memory use stays bounded per file. (2) Chunk size and overlap are configurable (chunk_size,
+chunk_overlap in settings) to balance context quality and storage. (3) ChromaDB persistence is on
+69
+w1953948/20220526
+
+===== PAGE 77/81 =====
+Pharmaceutical RAG Agent Chapter 7: Implementation
+disk (chroma_persist_dir); SQLite is file-based (sqlite_db_path). (4) Dataset download scripts
+support a --limit (e.g. 100 or 1000 articles) for smaller test corpora. (5) API keys and paths are in
+.env so different environments can point to different data directories or providers without code
+changes.
+7.5.4 Additional Implementation Notes
+● SQL safety: The SQL retriever prompt instructs the LLM to generate only read-only
+(SELECT) queries; the implementation can validate that the generated string does not contain
+destructive keywords before execution to reduce risk of prompt-induced misuse.
+● Token counting: Cost calculation uses token counts returned or estimated from the
+LangChain LLM calls; the cost calculator applies fixed input/output ratios per tier for pricing.
+More accurate costing would require per-call input/output token reporting from each provider.
+7.6 Chapter Summary
+This chapter described the implementation of the Pharmaceutical RAG Agent. Technology selection
+was justified: Python for async and ML ecosystems, FastAPI for an async API, LangChain for multi-
+provider LLM orchestration, ChromaDB and SQLite for vector and relational storage, and Pydantic for
+schemas and configuration. The core functionality was implemented in a modular structure:
+orchestrator, classifier, hybrid retriever (vector and SQL), synthesizer, ingestion pipeline (parsers and
+chunker), cost calculator, and evaluation module. The user interface is a single HTML/CSS/JavaScript
+page that calls POST /query, displays the answer, classification, sources, and cost, with basic
+accessibility considerations. Challenges in debugging, performance, and resource use were addressed
+through logging, async design, configurable retrieval and chunking, and environment-based
+configuration. The system is implemented as a working prototype ready for functional testing,
+evaluation runs (e.g. scripts/run_pharma_eval.py), and further testing as described in the next phase.
+70
+w1953948/20220526
+
+===== PAGE 78/81 =====
+Pharmaceutical RAG Agent Chapter 8 : Time Schedule (Updated with
+Actual Progress)
+Chapter 8 : Time Schedule (Updated with Actual
+Progress)
+71
+w1953948/20220526
+
+===== PAGE 79/81 =====
+Pharmaceutical RAG Agent References
+References
+Asai, A., Wu, Z., Wang, Y., Sil, A. and Schlichtkrull, M. (2023) Self-RAG: Learning to
+Retrieve, Generate, and Critique through Self-Reflection. Available at:
+https://arxiv.org/abs/2310.11511.
+BaranziniLab (2024) 'Biomedical knowledge graph-optimized prompt generation for large
+language models', Bioinformatics, 40(9).
+Chen, J., Wang, L. and Zhang, Y. (2022) 'A Generic Retrieval-Augmented Generation
+Framework for Enterprise Knowledge Bases', in Proceedings of the 2022 International
+Conference on Information and Knowledge Management (CIKM), Atlanta, GA, USA, pp. 112-
+121.
+Day, A. (2024) Unlocking Hybrid Search: A Deep Dive into Allen Day's Solr MCP Server.
+Available at: https://skywork.ai/skypage/en/hybrid-search-solr-mcp/ (Accessed: 30 October
+2025).
+Es, S., et al. (2023) RAGAs: Automated Evaluation of Retrieval Augmented Generation.
+Available at: https://arxiv.org/abs/2309.15217.
+Fanconi, T., Schaar, M. and Jitkrittum, W. (2024) Towards a Cascaded LLM Framework for
+Cost-effective Human-AI Decision-Making. Available at: https://arxiv.org/abs/2405.15838.
+Gao, P., et al. (2024) 'RAG-based Text2SQL Business Intelligence System Based on Retrieval-
+Augmented Generation (RAG)', DOAJ, 2024.
+Gu, Y., et al. (2021) 'Domain-Specific Language Model Pretraining for Biomedical Natural
+Language Processing', ACM Transactions on Computing for Healthcare, 3(1), pp. 1-23.
+Gupta, R. and Li, X. (2023) 'Multimodal Fusion for Financial Report Analysis: Combining
+Textual and Tabular Data', Journal of Financial Data Science, 5(3), pp. 45-60.
+Hao, S., et al. (2024) 'SQL-RAG: A RAG Framework for SQL Database Querying', in
+Proceedings of the 2024 ACM SIGMOD International Conference on Management of Data.
+72
+w1953948/20220526
+
+===== PAGE 80/81 =====
+Pharmaceutical RAG Agent References
+Herzig, J., et al. (2020) 'TAPAS: Weakly Supervised Table Parsing via Pre-training', in
+Proceedings of the 58th Annual Meeting of the Association for Computational Linguistics
+(ACL), pp. 4320-4333.
+Lee, J., Yoon, W., Kim, S., Kim, D., Kim, S., So, C.H. and Kang, J. (2020) 'BioBERT: a pre-
+trained biomedical language representation model for biomedical text mining', Bioinformatics,
+36(4), pp. 1234–1240.
+Lewis, P., et al. (2020) 'Retrieval-Augmented Generation for Knowledge-Intensive NLP
+Tasks', in Advances in Neural Information Processing Systems 33 (NeurIPS 2020), pp. 9459-
+9474.
+Liu, P., et al. (2023) 'A Comprehensive Survey of Text-to-SQL', ACM Computing Surveys,
+56(2), pp. 1-38.
+Manjee, S. (2024) From PDF tables to insights: An alternative approach for parsing PDFs in
+RAG. Available at: https://www.elastic.co/search-labs/blog/alternative-approach-for-parsing-
+pdfs-in-rag (Accessed: 30 October 2025).
+Rodriguez, F., Patel, S. and Kim, M. (2023) 'Cost-Effective Query Routing for Large Language
+Model Cascades in Conversational AI', in Advances in Neural Information Processing Systems
+36 (NeurIPS 2023), pp. 2015-2025.
+Sadekar, O. (2024) Natural Language to SQL with LangChain + RAG: A Practical Guide.
+Available at: https://medium.com/@OmkarSadekar/natural-language-to-sql-with-langchain-
+rag-a-practical-guide-1841616c8523 (Accessed: 30 October 2025).
+Sahoo, S., et al. (2024) Balancing Content Size in RAG-Text2SQL System. Available at:
+https://arxiv.org/abs/2502.15723.
+Vaswani, A., et al. (2017) 'Attention Is All You Need', in Advances in Neural Information
+Processing Systems 30 (NIPS 2017), pp. 5998-6008.
+Yue, M., Zhao, J., Zhang, M., Du, L. and Yao, Z. (2023) 'Large Language Model Cascades
+with Mixture of Thoughts Representations for Cost-efficient Reasoning', in International
+Conference on Learning Representations (ICLR).
+73
+w1953948/20220526
+
+===== PAGE 81/81 =====
+Pharmaceutical RAG Agent References
+Zhang, H., et al. (2024) Cost-Saving LLM Cascades with Early Abstention. Available at:
+https://arxiv.org/abs/2502.09054.
+74
+w1953948/20220526

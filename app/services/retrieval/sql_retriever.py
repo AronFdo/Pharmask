@@ -262,7 +262,10 @@ class SQLRetriever:
                     source_id=source_doc,
                     title=row.get("name", row.get("drug_id", "")),
                     snippet=str(row)[:200],
-                    metadata={"table": self._infer_table_from_row(row)},
+                    metadata={
+                        "table": self._infer_table_from_row(row),
+                        "full_text": str(row),
+                    },
                 )
                 sources.append(source)
         

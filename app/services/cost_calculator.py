@@ -37,6 +37,11 @@ MODEL_PRICING = {
         "claude-3-opus-20240229": {"input": 15.00, "output": 75.00},
         "claude-3-haiku-20240307": {"input": 0.25, "output": 1.25},
     },
+    "dr7": {
+        # Dr7.ai medical models (prices per 1M tokens, derived from $/1K in docs)
+        # med-palm-2: $0.001 / 1K input, $0.002 / 1K output
+        "med-palm-2": {"input": 1.0, "output": 2.0},
+    },
 }
 
 

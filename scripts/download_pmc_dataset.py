@@ -6,6 +6,7 @@ which we combine into structured XML documents for ingestion.
 
 Usage:
     python scripts/download_pmc_dataset.py [--limit N] [--subset commercial|non_commercial|other]
+    python scripts/download_pmc_dataset.py [--dataset-source pmc_open_access]
 
 Options:
     --limit N       Download only first N documents (default: all)
@@ -162,6 +163,28 @@ def create_json_document(item: dict) -> dict:
     return doc
 
 
+def create_json_document_pmc_open_access(item: dict) -> dict:
+    """Create a structured JSON document from pmc/open_access dataset items."""
+    text = get_text_content(item.get("text", ""))
+    doc_id = get_text_content(item.get("accession_id", "")) or get_text_content(item.get("pmid", ""))
+
+    return {
+        "doc_id": doc_id,
+        "pmid": get_text_content(item.get("pmid", "")),
+        "license": get_text_content(item.get("license", "")),
+        "citation": get_text_content(item.get("citation", "")),
+        "retracted": get_text_content(item.get("retracted", "no")).lower() in {"yes", "true", "1"},
+        "sections": [
+            {
+                "title": "Content",
+                "text": text,
+            }
+        ] if text.strip() else [],
+        "tables": "",
+        "figures": "",
+    }
+
+
 def _escape_xml(text: str) -> str:
     """Escape special XML characters."""
     if not text:
@@ -194,8 +217,12 @@ def get_text_content(value) -> str:
     return str(value)
 
 
-def has_content(item: dict) -> bool:
+def has_content(item: dict, dataset_source: str = "tomtbt_xml") -> bool:
     """Check if the item has any meaningful content."""
+    if dataset_source == "pmc_open_access":
+        text = get_text_content(item.get("text"))
+        return bool(text.strip())
+
     # Check main sections
     for section in CONTENT_SECTIONS:
         content = get_text_content(item.get(section))
@@ -221,6 +248,7 @@ def download_pmc_dataset(
     limit: int = None,
     streaming: bool = True,
     output_format: str = "json",  # "json" or "xml"
+    dataset_source: str = "pmc_open_access",  # "pmc_open_access" | "tomtbt_xml"
 ):
     """
     Download PMC Open Access dataset from Hugging Face.
@@ -240,17 +268,27 @@ def download_pmc_dataset(
     output_dir = Path(output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
     
-    logger.info(f"Loading PMC Open Access dataset (subset: {subset})...")
+    logger.info(f"Loading PMC Open Access dataset (source: {dataset_source})...")
     logger.info("This may take a moment to initialize...")
     
     # Load dataset in streaming mode
-    ds = load_dataset(
-        "TomTBT/pmc_open_access_xml",
-        subset,
-        split="train",
-        streaming=streaming,
-        trust_remote_code=True,
-    )
+    if dataset_source == "pmc_open_access":
+        ds = load_dataset(
+            "pmc/open_access",
+            split="train",
+            streaming=streaming,
+            trust_remote_code=True,
+        )
+    elif dataset_source == "tomtbt_xml":
+        ds = load_dataset(
+            "TomTBT/pmc_open_access_xml",
+            subset,
+            split="train",
+            streaming=streaming,
+            trust_remote_code=True,
+        )
+    else:
+        raise ValueError("dataset_source must be 'pmc_open_access' or 'tomtbt_xml'")
     
     logger.info(f"Saving documents to {output_dir} (format: {output_format})...")
     
@@ -267,7 +305,7 @@ def download_pmc_dataset(
             
             try:
                 # Skip items without content
-                if not has_content(item):
+                if not has_content(item, dataset_source=dataset_source):
                     skipped += 1
                     continue
                 
@@ -277,7 +315,10 @@ def download_pmc_dataset(
                 
                 if output_format == "json":
                     # Create JSON document
-                    doc = create_json_document(item)
+                    if dataset_source == "pmc_open_access":
+                        doc = create_json_document_pmc_open_access(item)
+                    else:
+                        doc = create_json_document(item)
                     filepath = output_dir / f"{doc_id}.json"
                     
                     with open(filepath, "w", encoding="utf-8") as f:
@@ -333,6 +374,13 @@ def main():
         help="Dataset subset (default: commercial)",
     )
     parser.add_argument(
+        "--dataset-source",
+        type=str,
+        choices=["pmc_open_access", "tomtbt_xml"],
+        default="pmc_open_access",
+        help="Dataset source (default: pmc_open_access)",
+    )
+    parser.add_argument(
         "--limit",
         type=int,
         default=None,
@@ -359,6 +407,7 @@ def main():
         limit=args.limit,
         streaming=not args.no_streaming,
         output_format=args.format,
+        dataset_source=args.dataset_source,
     )
 
 

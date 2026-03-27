@@ -45,11 +45,11 @@ async def main():
     def progress(current, total):
         print(f"  Progress: {current}/{total} ({100*current/total:.0f}%)", end="\r")
     
-    results, metrics = await evaluator.evaluate(progress_callback=progress)
+    results_by_variant, metrics_by_variant = await evaluator.evaluate(progress_callback=progress)
     print()  # Clear progress line
     
     # Print report
-    evaluator.print_report(results, metrics)
+    evaluator.print_report(results_by_variant, metrics_by_variant)
     
     # Save results
     output_dir = PROJECT_ROOT / "data" / "evaluation" / "results"
@@ -60,36 +60,56 @@ async def main():
     # Save JSON
     json_path = output_dir / f"pharma_eval_{timestamp}.json"
     with open(json_path, "w", encoding="utf-8") as f:
-        json.dump({
-            "timestamp": timestamp,
-            "metrics": {
-                "classification_accuracy": metrics.classification_accuracy,
-                "classification_by_type": metrics.classification_by_type,
-                "avg_keyword_coverage": metrics.avg_keyword_coverage,
-                "perfect_coverage_rate": metrics.perfect_coverage_rate,
-                "total_cost_usd": metrics.total_cost_usd,
-                "avg_cost_per_query": metrics.avg_cost_per_query,
-                "tier1_ratio": metrics.tier1_ratio,
-                "estimated_savings": metrics.estimated_savings_vs_tier2_only,
-                "avg_latency_ms": metrics.avg_latency_ms,
-                "coverage_by_query_type": metrics.coverage_by_query_type,
+        json.dump(
+            {
+                "timestamp": timestamp,
+                "metrics_by_variant": {
+                    variant: {
+                        "classification_accuracy": m.classification_accuracy,
+                        "classification_by_type": m.classification_by_type,
+                        "avg_keyword_coverage": m.avg_keyword_coverage,
+                        "perfect_coverage_rate": m.perfect_coverage_rate,
+                        "avg_evidence_f1": m.avg_evidence_f1,
+                        "perfect_f1_rate": m.perfect_f1_rate,
+                        "multimodal_avg_evidence_f1": m.multimodal_avg_evidence_f1,
+                        "cer_cost_div_f1": m.cer_cost_div_f1,
+                        "total_cost_usd": m.total_cost_usd,
+                        "avg_cost_per_query": m.avg_cost_per_query,
+                        "tier1_ratio": m.tier1_ratio,
+                        "estimated_savings": m.estimated_savings_vs_tier2_only,
+                        "avg_latency_ms": m.avg_latency_ms,
+                        "coverage_by_query_type": m.coverage_by_query_type,
+                        "f1_by_query_type": m.f1_by_query_type,
+                        "db_type_correct_rate": m.db_type_correct_rate,
+                    }
+                    for variant, m in metrics_by_variant.items()
+                },
+                "results_by_variant": {
+                    variant: [
+                        {
+                            "id": r.question_id,
+                            "question": r.question,
+                            "expected_type": r.expected_type,
+                            "predicted_type": r.predicted_type,
+                            "classification_correct": r.classification_correct,
+                            "keyword_coverage": r.keyword_coverage,
+                            "evidence_f1": r.evidence_f1,
+                            "keywords_found": r.keywords_found,
+                            "keywords_missing": r.keywords_missing,
+                            "cost_usd": r.total_cost_usd,
+                            "latency_ms": r.latency_ms,
+                            "used_text_sources": r.used_text_sources,
+                            "used_table_sources": r.used_table_sources,
+                            "db_type_correct": r.db_type_correct,
+                        }
+                        for r in rs
+                    ]
+                    for variant, rs in results_by_variant.items()
+                },
             },
-            "results": [
-                {
-                    "id": r.question_id,
-                    "question": r.question,
-                    "expected_type": r.expected_type,
-                    "predicted_type": r.predicted_type,
-                    "classification_correct": r.classification_correct,
-                    "keyword_coverage": r.keyword_coverage,
-                    "keywords_found": r.keywords_found,
-                    "keywords_missing": r.keywords_missing,
-                    "cost_usd": r.total_cost_usd,
-                    "latency_ms": r.latency_ms,
-                }
-                for r in results
-            ]
-        }, f, indent=2)
+            f,
+            indent=2,
+        )
     
     logger.info(f"\nResults saved to: {json_path}")
     
@@ -97,20 +117,25 @@ async def main():
     print("\n" + "="*70)
     print("THESIS-READY SUMMARY")
     print("="*70)
+    hybrid_metrics = metrics_by_variant.get("hybrid")
+    vector_metrics = metrics_by_variant.get("vector_only")
     print(f"""
 Research Question 1: Query Classification
-  - Classification Accuracy: {metrics.classification_accuracy:.1%}
+  - Hybrid Classification Accuracy: {hybrid_metrics.classification_accuracy:.1%}
+  - Vector-only Classification Accuracy: {vector_metrics.classification_accuracy:.1%}
   - The Tier-1 model correctly routes queries to appropriate retrieval
 
 Research Question 2: Hybrid Retrieval Value
-  - Text Query Coverage: {metrics.coverage_by_query_type.get('text', 0):.1%}
-  - SQL Query Coverage: {metrics.coverage_by_query_type.get('sql', 0):.1%}  
-  - Hybrid Query Coverage: {metrics.coverage_by_query_type.get('hybrid', 0):.1%}
+  - Hybrid Expected-Text Evidence Recall: {hybrid_metrics.coverage_by_query_type.get('text', 0):.1%}
+  - Hybrid Expected-SQL Evidence Recall: {hybrid_metrics.coverage_by_query_type.get('sql', 0):.1%}
+  - Hybrid Expected-Hybrid Evidence Recall: {hybrid_metrics.coverage_by_query_type.get('hybrid', 0):.1%}
   - Hybrid queries require BOTH sources for complete answers
 
 Research Question 3: Cost-Efficiency
-  - Tier-1 Token Ratio: {metrics.tier1_ratio:.1%}
-  - Estimated Savings: {metrics.estimated_savings_vs_tier2_only:.1%} vs Tier-2 only
+  - CER (Hybrid): {hybrid_metrics.cer_cost_div_f1:.6f}
+  - CER (Vector-only): {vector_metrics.cer_cost_div_f1:.6f}
+  - Tier-1 Token Ratio (Hybrid): {hybrid_metrics.tier1_ratio:.1%}
+  - Estimated Savings (Hybrid): {hybrid_metrics.estimated_savings_vs_tier2_only:.1%} vs Tier-2 only
   - The cascade architecture reduces costs significantly
 """)
 
