@@ -626,7 +626,7 @@
     <div class="container">
         <header>
             <h1>Pharmaceutical RAG Agent</h1>
-            <p class="subtitle">Ask questions about pharmaceutical data - drug information, dosages, interactions, and more</p>
+            <p class="subtitle">Practical medication questions: label-style facts from your database plus evidence from ingested biomedical articles. Examples fit a typical DailyMed + PMC OA corpus—adjust names to match your data.</p>
         </header>
 
         <div class="query-form">
@@ -635,7 +635,7 @@
                     <input 
                         type="text" 
                         id="query-input" 
-                        placeholder="Ask a pharmaceutical question..." 
+                        placeholder="e.g. what a product is used for, side effects, interactions, dosing…" 
                         autocomplete="off"
                         required
                     >
@@ -715,35 +715,38 @@
         <div class="error-message" id="error-message" style="display: none;"></div>
 
         <div class="examples-section">
-            <div class="examples-title">Try these example queries (organized by query type):</div>
+            <div class="examples-title">Practical examples (swap product names if yours differ):</div>
             
-            <!-- SQL Queries (Green) -->
+            <!-- SQL — factual lookups from structured label tables -->
             <div class="example-category">
                 <span class="category-label sql-label">SQL</span>
                 <div class="example-queries">
-                    <button class="example-query sql-query" data-query="What is the recommended dosage for ZYRTEC?">ZYRTEC dosage</button>
-                    <button class="example-query sql-query" data-query="What is ZYRTEC used for?">ZYRTEC uses</button>
-                    <button class="example-query sql-query" data-query="What is the dosage of children's cough DM for a 6 year old?">Children's cough dosage</button>
+                    <button class="example-query sql-query" data-query="What is 911 Stress and Anxiousness indicated for according to the database?">What is 911 Stress used for?</button>
+                    <button class="example-query sql-query" data-query="What is Good Mood Enhancer indicated for according to the database?">Good Mood Enhancer uses</button>
+                    <button class="example-query sql-query" data-query="Which drug is indicated for temporary relief of joint pain and stiffness?">Joint pain relief product</button>
+                    <button class="example-query sql-query" data-query="Find records where nausea appears in adverse reaction rows.">Products listing nausea</button>
+                    <button class="example-query sql-query" data-query="List drugs that have interaction rows mentioning cyclosporine.">Cyclosporine interactions</button>
                 </div>
             </div>
             
-            <!-- Text Queries (Blue) -->
+            <!-- TEXT — clinical / patient-relevant themes from literature chunks -->
             <div class="example-category">
                 <span class="category-label text-label">TEXT</span>
                 <div class="example-queries">
-                    <button class="example-query text-query" data-query="How do antihistamines like cetirizine work to relieve allergies?">How antihistamines work</button>
-                    <button class="example-query text-query" data-query="How does minoxidil promote hair growth?">Minoxidil mechanism</button>
-                    <button class="example-query text-query" data-query="What precautions should be taken when using sunscreen?">Sunscreen precautions</button>
+                    <button class="example-query text-query" data-query="What side effects and safety warnings are commonly discussed for prescription medicines in the retrieved literature?">Side effects &amp; warnings</button>
+                    <button class="example-query text-query" data-query="How do the ingested articles explain drug-drug interactions and what should patients or clinicians watch for?">Drug interactions</button>
+                    <button class="example-query text-query" data-query="What does the evidence say about monitoring patients who take several medications at the same time?">Polypharmacy monitoring</button>
+                    <button class="example-query text-query" data-query="What themes appear in the literature on antibiotic use, dosing, and resistance?">Antibiotics &amp; resistance</button>
                 </div>
             </div>
             
-            <!-- Hybrid Queries (Orange) -->
+            <!-- HYBRID — combine label data with explanatory text -->
             <div class="example-category">
                 <span class="category-label hybrid-label">HYBRID</span>
                 <div class="example-queries">
-                    <button class="example-query hybrid-query" data-query="What is ZYRTEC used for and what is the recommended adult dosage?">ZYRTEC uses & dosage</button>
-                    <button class="example-query hybrid-query" data-query="How does children's cough DM work and what is the dose for children aged 6-12?">Cough DM mechanism & dose</button>
-                    <button class="example-query hybrid-query" data-query="How do nicotine lozenges help with smoking cessation and what is the dosing schedule?">Nicotine lozenges help & schedule</button>
+                    <button class="example-query hybrid-query" data-query="What is Good Mood Enhancer indicated for in the database, and what does the biomedical text add about mood, stress, or nervousness?">Mood product: label + context</button>
+                    <button class="example-query hybrid-query" data-query="Which database entries mention dizziness in adverse reactions, and what do the retrieved articles say about dizziness as a medication side effect?">Dizziness: tables + articles</button>
+                    <button class="example-query hybrid-query" data-query="For medicines with oral dosing in the database, summarize practical points from the literature on taking oral medications with food, water, or adherence.">Oral dosing + practical tips</button>
                 </div>
             </div>
         </div>
